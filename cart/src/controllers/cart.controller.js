@@ -1,0 +1,176 @@
+import cartModel from "../models/cart.model.js"
+
+
+const addItemToCart = async (req, res) => {
+    try {
+        const { productId, qty } = req.body
+
+        const user = req.user
+
+        console.log("USER:", user);
+        console.log("USER ID:", user?.id);
+
+        let cart = await cartModel.findOne({ user: user.id })
+
+        if (!cart) {
+            cart = new cartModel({ user: user.id, items: [] })
+        }
+
+        const existingItemIndex = cart.items.findIndex(item => item.productId.toString() === productId)
+
+        if (existingItemIndex >= 0) {
+            cart.items[existingItemIndex].quantity += qty
+        } else {
+            cart.items.push({ productId, quantity: qty })
+        }
+
+        await cart.save()
+
+        res.status(200).json({
+            message: "Item added to cart",
+            cart,
+            success: true
+        })
+
+    } catch (error) {
+        console.error("🚀 ~ addItemToCart ~ error:", error)
+    }
+}
+
+const updateItemQuantity = async (req, res) => {
+    try {
+        const { productId } = req.params
+        const { qty } = req.body
+        const user = req.user
+        const cart = await cartModel.findOne({ user: user.id })
+
+        if (!cart) {
+            return res.status(404).json({
+                message: 'Cart not found',
+                success: false
+            })
+        }
+
+        const existingItemIndex = cart.items.findIndex(item => item.productId.toString() === productId)
+
+        if (existingItemIndex < 0) {
+            return res.status(404).json({ message: 'Item not found', success: false })
+        }
+
+        cart.items[existingItemIndex].quantity = qty
+        await cart.save()
+        res.status(200).json({
+            message: 'Item updated',
+            cart,
+            success: true
+        })
+
+    } catch (error) {
+        console.error("🚀 ~ updateItemQuantity ~ error:", error)
+    }
+}
+
+const getCart = async (req, res) => {
+    try {
+        const user = req.user;
+
+        let cart = await cartModel.findOne({
+            user: user.id
+        })
+
+        if (!cart) {
+            cart = new cartModel({ user: user.id, items: [] })
+            await cart.save();
+        }
+
+        res.status(200).json({
+            cart,
+            totals: {
+                itemCount: cart.items.length,
+                totalQuantity: cart.items.reduce((sum, item) => sum + item.quantity)
+            },
+            success: true
+        })
+    } catch (error) {
+        console.error("🚀 ~ getCart ~ error:", error)
+    }
+}
+
+const deleteOneCart = async (req, res) => {
+    try {
+        const user = req.user
+        const { productId } = req.params
+        const cart = await cartModel.findOne({ user: user.id })
+        if (!cart) {
+            return res.status(404).json({
+                message: 'Cart not found',
+                success: false
+            })
+        }
+
+        const existingItemIndex = cart.items.findIndex(item => item.productId.toString() === productId)
+        if (existingItemIndex < 0) {
+            return res.status(404).json({
+                message: 'Item not found in the cart',
+                success: false
+            })
+        }
+
+        cart.items.splice(existingItemIndex, 1)
+        await cart.save()
+
+        return res.status(200).json({
+            message: "Item removed from cart",
+            cart,
+            success: true
+        });
+
+    } catch (error) {
+        console.error("🚀 ~ deleteOneCart ~ error:", error)
+    }
+}
+
+const clearCart = async (req, res) => {
+    try {
+        const user = req.user;
+
+        const cart = await cartModel.findOne({
+            user: user.id
+        });
+
+        if (!cart) {
+            return res.status(404).json({
+                message: "Cart not found",
+                success: false
+            });
+        }
+
+        // Saare cart items remove
+        cart.items = [];
+
+        await cart.save();
+
+        return res.status(200).json({
+            message: "Cart cleared successfully",
+            cart,
+            success: true
+        });
+
+    } catch (error) {
+        console.error("🚀 ~ clearCart ~ error:", error);
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false
+        });
+    }
+};
+
+
+
+export default {
+    addItemToCart,
+    updateItemQuantity,
+    getCart,
+    deleteOneCart,
+    clearCart
+}

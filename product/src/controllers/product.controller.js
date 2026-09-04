@@ -138,7 +138,7 @@ const updateProduct = async (req, res) => {
             })
         }
 
-        const allowedUpdates = ['title', 'description', 'price'];
+        const allowedUpdates = ['title', 'description', 'price','stock'];
         for (const key of Object.keys(req.body)) {
             if (allowedUpdates.includes(key)) {
                 if (key === 'price' && typeof req.body.price === 'object') {

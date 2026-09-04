@@ -87,7 +87,7 @@ const getCart = async (req, res) => {
             cart,
             totals: {
                 itemCount: cart.items.length,
-                totalQuantity: cart.items.reduce((sum, item) => sum + item.quantity)
+                totalQuantity: cart.items.reduce((sum, item) => sum + item.quantity,0)
             },
             success: true
         })

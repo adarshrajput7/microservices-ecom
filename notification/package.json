@@ -1,11 +1,11 @@
 {
-  "name": "auth",
+  "name": "notification",
   "version": "1.0.0",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js"
+    "start": "node server.js",
+    "dev":"npx nodemon server.js"
   },
   "keywords": [],
   "author": "",
@@ -13,16 +13,9 @@
   "description": "",
   "dependencies": {
     "amqplib": "^2.0.1",
-    "bcryptjs": "^3.0.3",
-    "cookie-parser": "^1.4.7",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "express-validator": "^7.3.2",
-    "ioredis": "^6.0.0",
-    "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.9.4"
-  },
-  "devDependencies": {
-    "nodemon": "3.1.14"
+    "mongoose": "^9.9.5",
+    "nodemailer": "^10.0.0"
   }
 }

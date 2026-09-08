@@ -1,6 +1,7 @@
 import productModel from "../models/product.model.js";
 import { uploadImage } from "../services/imagekit.service.js";
 import mongoose from 'mongoose';
+import broker from "../broker/broker.js";
 
 
 const createProduct = async (req, res) => {
@@ -9,7 +10,8 @@ const createProduct = async (req, res) => {
             title,
             description,
             priceAmount,
-            priceCurrency = 'INR'
+            priceCurrency = 'INR',
+            stock
         } = req.body;
 
         if (!title || priceAmount === undefined || priceAmount === null) {
@@ -44,7 +46,16 @@ const createProduct = async (req, res) => {
             description,
             price,
             seller,
-            images
+            images,
+            stock
+        });
+
+        await broker.publishToQueue("PRODUCT_SELLER_DASHBOARD.PRODUCT_CREATED", product)
+        
+        await broker.publishToQueue("PRODUCT_NOTIFICATION.PRODUCT_CREATED", {
+            email: req.user.email,
+            productId: product._id,
+            sellerId: seller
         });
 
 

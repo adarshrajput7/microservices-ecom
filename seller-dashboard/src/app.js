@@ -1,6 +1,8 @@
 import express from 'express'
 import cookieParser from 'cookie-parser'
-import routes from './routes/auth.routes.js'
+import sellerRouter from './routes/seller.routes.js'
+
+
 
 const app = express()
 
@@ -9,12 +11,10 @@ app.use(cookieParser())
 
 app.get('/', (req, res) => {
     res.status(200).json({
-        message:'Auth Service is running.'
+        message:'Seller Dashboard Service is running.'
     })
 })
 
-app.use('/api/auth',routes)
-
-
+app.use('/api/seller/dashboard', sellerRouter)
 
 export default app

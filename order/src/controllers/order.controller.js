@@ -1,5 +1,6 @@
 import axios from 'axios'
 import orderModel from '../models/order.model.js';
+import  broker from '../broker/broker.js'
 
 
 const createOrder = async (req, res) => {
@@ -72,6 +73,8 @@ const createOrder = async (req, res) => {
             },
             shippingAddress: req.body.shippingAddress
         })
+
+        await broker.publishToQueue("ORDER_SELLER_DASHBOARD.ORDER_CREATED",order)
 
         return res.status(201).json({
             message: "Order done successfully",

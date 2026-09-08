@@ -1,18 +1,20 @@
-const express = require('express')
-const { connect } = require("./broker/broker.js")
-const setListeners = require('./broker/listners.js')
+import express from 'express'
+// const { connect } = require("./broker/broker.js")
+import connect from './broker/broker.js'
+import listener from './broker/listners.js'
 
 const app = express()
 
-connect().then(() => {
-    setListeners()
+connect.connect().then(() => {
+    listener()
 })
 
-app.get("/", (req, res) => {
-    res.send("Notification service is up and running")
+app.get('/', (req, res) => {
+    res.status(200).json({
+        message:'Notification Service is running.'
+    })
 })
 
 
 
-
-module.exports = app
+export default  app

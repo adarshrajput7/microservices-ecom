@@ -2,7 +2,7 @@ import orderModel from "../models/order.model.js";
 import productModel from "../models/product.model.js";
 
 
-
+//get all products of seller
 async function getMetrics(req, res) {
     try {
         const seller = req.user;

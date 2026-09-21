@@ -11,7 +11,9 @@ const createProduct = async (req, res) => {
             description,
             priceAmount,
             priceCurrency = 'INR',
-            stock
+            stock,
+            category,
+            gender
         } = req.body;
 
         if (!title || priceAmount === undefined || priceAmount === null) {
@@ -47,7 +49,9 @@ const createProduct = async (req, res) => {
             price,
             seller,
             images,
-            stock
+            stock,
+            gender,
+            category
         });
 
         await broker.publishToQueue("PRODUCT_SELLER_DASHBOARD.PRODUCT_CREATED", product)
@@ -77,32 +81,243 @@ const createProduct = async (req, res) => {
 };
 
 
+// const getProducts = async (req, res) => {
+//     try {
+//         const { q, minprice, maxprice, skip = 0, limit = 20 } = req.query
+
+//         const filter = {}
+
+//         if (q) {
+//             filter.$text = { $search: q }
+//         }
+
+//         if (minprice) {
+//             filter['price.amount'] = { ...filter['price.amount'], $gte: Number(minprice) }
+//         }
+
+//         if (maxprice) {
+//             filter['price.amount'] = { ...filter['price.amount'], $gte: Number(maxprice) }
+//         }
+
+//         const products = await productModel.find(filter).skip(Number(skip)).limit(Math.min(Number(limit), 20))
+
+//         return res.status(200).json({ data: products })
+
+//     } catch (error) {
+//         console.error("🚀 ~ getProducts ~ error:", error)
+//     }
+// }
+
+//orignal
+// const getProducts = async (req, res) => {
+//     try {
+//         const { q, minprice, maxprice, page = 1, limit = 20 } = req.query;
+
+//         const filter = {};
+
+//         // 1. Text Search Filter
+//         if (q) {
+//             filter.$text = { $search: q };
+//         }
+
+//         // 2. Price Filter (Proper Range Handling)
+//         if (minprice || maxprice) {
+//             filter['price.amount'] = {};
+//             if (minprice) filter['price.amount'].$gte = Number(minprice);
+//             if (maxprice) filter['price.amount'].$lte = Number(maxprice); // Fixed: $lte instead of $gte
+//         }
+
+//         // 3. Pagination Math
+//         const parsedPage = Math.max(1, Number(page)); // Minimum page 1 rahega
+//         const parsedLimit = Math.min(Math.max(1, Number(limit)), 50); // Max 50 products per request
+//         const skipAmount = (parsedPage - 1) * parsedLimit;
+
+//         // 4. Parallel Query (Products + Total Count)
+//         const [products, totalProducts] = await Promise.all([
+//             productModel.find(filter).skip(skipAmount).limit(parsedLimit),
+//             productModel.countDocuments(filter) // Total count for frontend pagination
+//         ]);
+
+//         const totalPages = Math.ceil(totalProducts / parsedLimit);
+
+//         // 5. Complete Response
+//         return res.status(200).json({
+//             success: true,
+//             data: products,
+//             pagination: {
+//                 totalProducts,
+//                 totalPages,
+//                 currentPage: parsedPage,
+//                 pageSize: products.length,
+//                 hasNextPage: parsedPage < totalPages,
+//                 hasPrevPage: parsedPage > 1
+//             }
+//         });
+
+//     } catch (error) {
+//         console.error("🚀 ~ getProducts ~ error:", error);
+//         return res.status(500).json({
+//             success: false,
+//             message: "Internal server error"
+//         });
+//     }
+// };
+
+
+
+// const getProducts = async (req, res) => {
+//     try {
+//         const {
+//             q,
+//             minprice,
+//             maxprice,
+//             gender,
+//             page = 1,
+//             limit = 20
+//         } = req.query;
+
+//         const filter = {};
+
+//         // 1. Text Search Filter
+//         if (q) {
+//             filter.$text = { $search: q };
+//         }
+
+//         // 2. Price Filter
+//         if (minprice || maxprice) {
+//             filter["price.amount"] = {};
+
+//             if (minprice) {
+//                 filter["price.amount"].$gte = Number(minprice);
+//             }
+
+//             if (maxprice) {
+//                 filter["price.amount"].$lte = Number(maxprice);
+//             }
+//         }
+
+//         // 3. Gender Filter
+//         if (gender) {
+//             filter.gender = gender;
+//         }
+
+//         // 4. Pagination
+//         const parsedPage = Math.max(1, Number(page));
+
+//         const parsedLimit = Math.min(
+//             Math.max(1, Number(limit)),
+//             50
+//         );
+
+//         const skipAmount =
+//             (parsedPage - 1) * parsedLimit;
+
+//         // 5. Products + Total Count
+//         const [products, totalProducts] = await Promise.all([
+//             productModel
+//                 .find(filter)
+//                 .skip(skipAmount)
+//                 .limit(parsedLimit),
+
+//             productModel.countDocuments(filter)
+//         ]);
+
+//         const totalPages =
+//             Math.ceil(totalProducts / parsedLimit);
+
+//         // 6. Response
+//         return res.status(200).json({
+//             success: true,
+//             data: products,
+//             pagination: {
+//                 totalProducts,
+//                 totalPages,
+//                 currentPage: parsedPage,
+//                 pageSize: products.length,
+//                 hasNextPage: parsedPage < totalPages,
+//                 hasPrevPage: parsedPage > 1
+//             }
+//         });
+
+//     } catch (error) {
+//         console.error(
+//             "🚀 ~ getProducts ~ error:",
+//             error
+//         );
+
+//         return res.status(500).json({
+//             success: false,
+//             message: "Internal server error"
+//         });
+//     }
+// };
+
+
 const getProducts = async (req, res) => {
     try {
-        const { q, minprice, maxprice, skip = 0, limit = 20 } = req.query
+        const { q, minprice, maxprice, gender, category, size, page = 1, limit = 12 } = req.query;
 
-        const filter = {}
+        const filter = {};
 
-        if (q) {
-            filter.$text = { $search: q }
+        // Search: title, description, category
+        if (q && q.trim()) {
+            const regex = new RegExp(q.trim(), "i");
+            filter.$or = [
+                { title: regex },
+                { description: regex },
+                { category: regex }
+            ];
         }
 
-        if (minprice) {
-            filter['price.amount'] = { ...filter['price.amount'], $gte: Number(minprice) }
+        // Category filter
+        if (category) filter.category = category;
+
+        // Price filter
+        if (minprice !== undefined || maxprice !== undefined) {
+            filter["price.amount"] = {};
+            if (minprice !== undefined) filter["price.amount"].$gte = Number(minprice);
+            if (maxprice !== undefined) filter["price.amount"].$lte = Number(maxprice);
         }
 
-        if (maxprice) {
-            filter['price.amount'] = { ...filter['price.amount'], $gte: Number(maxprice) }
-        }
+        // Gender, Size
+        if (gender) filter.gender = gender;
+        if (size) filter.size = size;
 
-        const products = await productModel.find(filter).skip(Number(skip)).limit(Math.min(Number(limit), 20))
+        console.log("FILTER:", JSON.stringify(filter));
 
-        return res.status(200).json({ data: products })
+        const parsedPage = Math.max(1, Number(page));
+        const parsedLimit = 12;
+        const skip = (parsedPage - 1) * parsedLimit;
+
+        const [products, totalProducts] = await Promise.all([
+            productModel.find(filter).skip(skip).limit(parsedLimit),
+            productModel.countDocuments(filter)
+        ]);
+
+        console.log("FOUND:", products.length);
+
+        return res.status(200).json({
+            success: true,
+            data: products,
+            pagination: {
+                totalProducts,
+                totalPages: Math.ceil(totalProducts / parsedLimit),
+                currentPage: parsedPage,
+                hasNextPage: parsedPage < Math.ceil(totalProducts / parsedLimit),
+                hasPrevPage: parsedPage > 1
+            }
+        });
 
     } catch (error) {
-        console.error("🚀 ~ getProducts ~ error:", error)
+        console.error("getProducts error:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
     }
-}
+};
+
+
 
 const getProductById = async (req, res) => {
     try {

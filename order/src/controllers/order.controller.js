@@ -15,7 +15,7 @@ const createOrder = async (req, res) => {
             });
         }
 
-        //cart service se all cart get kar rhe jo use ne cart me add kar rakha hai 
+        //cart service se all cart get kar rhe jo user ne cart me add kar rakha hai 
         const cartResponse = await axios.get(
             "http://localhost:3002/api/cart/",
             {
@@ -53,6 +53,10 @@ const createOrder = async (req, res) => {
 
             return {
                 product: item.productId,
+                
+                title: product.title,
+                images: product.images[0]?.url,
+                size: item.size,
                 quantity: item.quantity,
                 price: {
                     amount: itemTotal,
@@ -92,7 +96,6 @@ const createOrder = async (req, res) => {
     }
 };
 
-
 const getMyOrder = async (req, res) => {
     try {
 
@@ -102,7 +105,8 @@ const getMyOrder = async (req, res) => {
 
         res.status(200).json({
             orders,
-            totalOrder: orders.length
+            totalOrder: orders.length,
+            success:true
         })
 
 

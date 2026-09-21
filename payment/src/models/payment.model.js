@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 
 const paymentSchema = new mongoose.Schema({
-    //order id from mongo 
+    //order id from mongo
     order: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
@@ -44,3 +44,4 @@ const paymentSchema = new mongoose.Schema({
 const paymentModel = mongoose.model('payment', paymentSchema)
 
 export default paymentModel
+

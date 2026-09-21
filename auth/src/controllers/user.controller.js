@@ -19,7 +19,7 @@ const registerUser = async (req, res) => {
         if (isUserAlreadyExists) {
             return res.status(409).json({
                 message: "Username or email already exists",
-                success: true
+                success: false
             })
         }
 
@@ -43,7 +43,7 @@ const registerUser = async (req, res) => {
                 fullName: user.fullName,
             }),
 
-         publishToQueue('AUTH_SELLER_DASHBOARD.USER_CREATED', user)
+            publishToQueue('AUTH_SELLER_DASHBOARD.USER_CREATED', user)
 
         ])
 
@@ -70,7 +70,8 @@ const registerUser = async (req, res) => {
                 fullName: user.fullName,
                 role: user.role,
                 addresses: user.addresses
-            }
+            },
+            token
         })
 
     } catch (error) {
@@ -80,12 +81,12 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
     try {
-        const { username, email, password } = req.body
+        const { usernameOrEmail, password } = req.body
 
         const user = await userModel.findOne({
             $or: [
-                { username },
-                { email }
+                { username: usernameOrEmail },
+                { email: usernameOrEmail }
             ]
         }).select('+password')
 
@@ -119,7 +120,7 @@ const loginUser = async (req, res) => {
         })
 
         return res.status(201).json({
-            message: "User registered successfully",
+            message: `Welcome Back ${user.fullName.firstName}`,
             success: true,
             user: {
                 id: user._id,
@@ -139,9 +140,20 @@ const loginUser = async (req, res) => {
 
 const getCurrentUser = async (req, res) => {
     try {
+
+        const userId = req.user
+        const user = await userModel.findById(userId.id)
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
         return res.status(200).json({
             message: "Current user fetched successfully",
-            user: req.user,
+            user: user,
             success: true
         })
     } catch (error) {
@@ -205,6 +217,22 @@ const addUserAddress = async (req, res) => {
 
         const { street, city, state, pincode, country, phone, isDefault } = req.body
 
+        const addressCheck = await userModel.findById(id);
+
+        if (!addressCheck) {
+            return res.status(404).json({
+                message: "User not found",
+                success: false
+            });
+        }
+
+        if (addressCheck.addresses.length >= 4) {
+            return res.status(400).json({
+                message: "You can add maximum 4 addresses",
+                success: false
+            });
+        }
+
         const user = await userModel.findOneAndUpdate({ _id: id }, {
             $push: {
                 addresses: {
@@ -228,7 +256,9 @@ const addUserAddress = async (req, res) => {
 
         return res.status(201).json({
             message: "Address added successfully",
-            address: user.addresses[user.addresses.length - 1]
+            address: user.addresses[user.addresses.length - 1],
+            user,
+            success:true
         })
 
     } catch (error) {
@@ -274,6 +304,7 @@ const deleteUserAddress = async (req, res) => {
         return res.status(200).json({
             message: "Address deleted successfully",
             addresses: user.addresses,
+            user,
             success: true
         });
 

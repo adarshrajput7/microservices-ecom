@@ -41,25 +41,43 @@ const registerUserValidations = [
 ]
 
 
+// const loginUserValidations = [
+//     body('email')
+//         .optional()
+//         .isEmail()
+//         .withMessage('Invalid email address'),
+//     body('username')
+//         .optional()
+//         .isString()
+//         .withMessage('Username must be a string'),
+//     body('password')
+//         .isLength({ min: 6 })
+//         .withMessage('Password must be at least 6 characters long'),
+//     (req, res, next) => {
+//         if (!req.body.email && !req.body.username) {
+//             return res.status(400).json({ errors: [ { msg: 'Either email or username is required' } ] });
+//         }
+//         respondWithValidationErrors(req, res, next);
+//     }
+// ]
+
 const loginUserValidations = [
-    body('email')
-        .optional()
-        .isEmail()
-        .withMessage('Invalid email address'),
-    body('username')
-        .optional()
-        .isString()
-        .withMessage('Username must be a string'),
-    body('password')
+    body("usernameOrEmail")
+        .trim()
+        .notEmpty()
+        .withMessage("Username or email is required"),
+
+    body("password")
+        .notEmpty()
+        .withMessage("Password is required")
         .isLength({ min: 6 })
-        .withMessage('Password must be at least 6 characters long'),
+        .withMessage("Password must be at least 6 characters long"),
+
     (req, res, next) => {
-        if (!req.body.email && !req.body.username) {
-            return res.status(400).json({ errors: [ { msg: 'Either email or username is required' } ] });
-        }
         respondWithValidationErrors(req, res, next);
     }
-]
+];
+
 
 const addUserAddressValidations = [
     body('street')

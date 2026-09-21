@@ -30,9 +30,26 @@ const productSchema = new mongoose.Schema({
     }],
     stock: {
         type: Number,
-        default:0
+        default: 0
+    },
+    category: {
+        type: String,
+        enum: ["FOOTWEAR", "CLOTHING", "MOBILES", "ACTIVE_LIFESTYLE"],
+        required: true
+    },
+
+    gender: {
+        type: String,
+        enum: ["MEN", "WOMEN", "UNISEX", "KIDS"]
     }
+
 }, { timestamps: true })
+
+productSchema.index({
+    title: "text",
+    description: "text",
+    category:"text",
+}); 
 
 const productModel = mongoose.model('product', productSchema)
 

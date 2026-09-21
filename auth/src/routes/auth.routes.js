@@ -18,7 +18,9 @@ routes.get('/users/me/addresses', authMiddleware.authMiddleware, authController.
 //add user address
 routes.post('/users/me/addresses', validators.addUserAddressValidations, authMiddleware.authMiddleware, authController.addUserAddress);
 //delete user address
-routes.delete('/users/me/addresses/:addressId',authMiddleware.authMiddleware,authController.deleteUserAddress);
+routes.delete('/users/me/addresses/:addressId', authMiddleware.authMiddleware, authController.deleteUserAddress);
+
+
 
 
  export default routes;

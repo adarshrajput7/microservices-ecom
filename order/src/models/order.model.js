@@ -24,6 +24,23 @@ const orderSchema = new mongoose.Schema({
                 type: mongoose.Schema.Types.ObjectId,
                 required: true
             },
+            // Product service se
+            title: {
+                type: String,
+                required: true
+            },
+
+            images: [
+                {
+                    type: String
+                }
+            ],
+
+            // Cart service se
+            size: {
+                type: String,
+                required: true
+            },
             quantity: {
                 type: Number,
                 default: 1,

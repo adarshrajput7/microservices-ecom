@@ -5,25 +5,84 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { createPortal } from "react-dom";
 import axios from "axios";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { setTriggerRefresh } from "@/redux/orderSlice";
 import { useDispatch } from "react-redux";
+import { Skeleton } from "../ui/skeleton";
+import toast from "react-hot-toast";
 
 const ProductCard = ({ item }) => {
   const navigate = useNavigate();
   const [openBag, setOpenBag] = useState(false)
   const [selectedSize, setSelectedSize] = useState();
 
+
+  // Skeleton Loading 
+  // =========================
+  if (!item) {
+    return (
+      <div className="relative overflow-hidden rounded-xl border border-gray-200 bg-white shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
+
+        {/* Product Image */}
+        <div className="relative aspect-3/4 w-full overflow-hidden bg-gray-100">
+
+          {/* Soft Skeleton */}
+          <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-gray-200 via-gray-300 to-gray-200" />
+
+          {/* Soft Glass Highlight */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/50 via-transparent to-black/5" />
+
+          {/* Wishlist */}
+          <div className="absolute right-2 top-2 sm:right-3 sm:top-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-300/70 bg-white/60 shadow-sm backdrop-blur-md sm:h-9 sm:w-9">
+              <div className="h-4 w-4 animate-pulse rounded-full bg-gray-500/50" />
+            </div>
+          </div>
+        </div>
+
+        {/* Product Details */}
+        <div className="bg-white px-2.5 pb-3 pt-2.5 sm:px-3 sm:pb-4 sm:pt-3">
+
+          {/* Category */}
+          <div className="mb-2 h-2.5 w-24 animate-pulse rounded-full bg-gray-300 sm:h-3" />
+
+          {/* Title */}
+          <div className="h-4 w-3/4 animate-pulse rounded-full bg-gray-300 sm:h-5" />
+
+          {/* Price + Button */}
+          <div className="mt-2.5 flex items-center justify-between gap-2 sm:mt-3">
+
+            {/* Price */}
+            <div className="h-5 w-20 animate-pulse rounded-full bg-gray-300 sm:h-6 sm:w-24" />
+
+            {/* Cart */}
+            <div className="flex h-7 w-7 items-center justify-center rounded-md border border-gray-300 bg-gray-100 shadow-sm sm:h-9 sm:w-9">
+              <div className="h-3.5 w-3.5 animate-pulse rounded-sm bg-gray-500/50 sm:h-4 sm:w-4" />
+            </div>
+
+          </div>
+        </div>
+
+        {/* Subtle Bottom Border */}
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent" />
+
+      </div>
+    );
+  }
+
+
   const image = item.images?.[4]?.thumbnail || item.images?.[0]?.url;
   const price = item.price?.amount || item.price;
   const dispatch = useDispatch()
 
   const goToProduct = () => navigate(`/view/${item._id}`);
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleWishlist = (e) => {
     e.stopPropagation();
     // wishlist logic
-    toast.error("This Featured under process")
+    // toast.error("This Featured under process")
+    toast.error("This Feature is under process.")
   };
 
   const handleAddToBag = (e) => {
@@ -51,7 +110,7 @@ const ProductCard = ({ item }) => {
 
       if (res.data.success) {
         dispatch(setTriggerRefresh())
-        toast.success('Add To Catt')
+        toast.success(res.data.message)
         navigate('/cart')
       }
       console.log(res);
@@ -65,15 +124,21 @@ const ProductCard = ({ item }) => {
   return (
     <>
       {/* Product Card */}
-      <div
+      <div onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         onClick={goToProduct}
-        className="group relative cursor-pointer overflow-hidden rounded-lg bg-[#e5e5e5]
- transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+        className="group relative cursor-pointer overflow-hidden rounded-lg bg-zinc-100
+          transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
       >
         {/* Product Image */}
         <div className="relative aspect-3/4 w-full overflow-hidden bg-[#f5f5f5]">
           <img
-            src={image}
+            src={
+              isHovered
+                ? item.images?.[2]?.url
+                : item.images?.[4]?.url
+            }
+            // src={image}
             alt={item.title}
             loading="lazy"
             className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
@@ -92,28 +157,59 @@ const ProductCard = ({ item }) => {
 
         {/* Product Details */}
         <div className="px-2.5 pb-3 pt-2.5 sm:px-3 sm:pb-4 sm:pt-3">
-          <p className="mb-0.5 truncate text-[9px] font-bold uppercase tracking-wider text-gray-900 sm:text-[10px]">
+          <p className="mb-0.5 truncate font-bold uppercase tracking-wider text-gray-900 text-xs lg:text-sm">
             {item.category || "Women's Lifestyle"}
           </p>
 
-          <h2 className="line-clamp-1 text-xs font-normal text-gray-800 sm:text-sm">
+          <h2 className="line-clamp-1 text-xs lg:text-sm font-normal text-gray-800 ">
             {item.title}
           </h2>
 
-          <div className="mt-1.5 flex items-center justify-between gap-2 sm:mt-2">
-            <p className="truncate text-sm font-bold text-gray-900 sm:text-base">
+          <div className="mt-1 flex items-center justify-between gap-2 sm:mt-2">
+            <p className="truncate  text-xs lg:text-sm font-bold text-gray-900 sm:text-base">
               ₹ {Number(price).toLocaleString("en-IN")}.00
             </p>
 
             {/* Add to Bag */}
-            <button
+            {/* <button
               type="button"
               aria-label="Add to bag"
               onClick={handleAddToBag}
               className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-white text-gray-700 transition-all duration-200 hover:bg-gray-900 hover:text-white sm:h-9 sm:w-9"
             >
               <IoBagAddOutline className="h-3.5 w-3.5 sm:h-4.5 sm:w-4.5" />
+            </button> */}
+
+            {/* <button
+              type="button"
+              aria-label="Add to bag"
+              onClick={handleAddToBag}
+              className="flex h-10 py-5 shrink-0 items-center justify-center gap-1 rounded-md border border-gray-300 bg-white px-1.5 text-gray-700 transition-all duration-500 ease-in-out hover:bg-gray-900 hover:text-white sm:h-9 sm:px-2 md:hover:px-3"
+            >
+              <IoBagAddOutline  className="h-8 w-8 shrink-0 " />
+              <span className="hidden max-w-0 overflow-hidden whitespace-nowrap text-sm font-medium opacity-0 transition-all duration-500 ease-in-out group-hover:max-w-20 group-hover:opacity-100 md:inline-block">
+                Add to Cart
+              </span>
+            </button> */}
+
+
+            <button
+              type="button"
+              aria-label="Add to bag"
+              onClick={handleAddToBag}
+              className="group relative flex  shrink-0 items-center justify-center gap-1 overflow-hidden rounded-lg border border-gray-300 bg-white px-1 py-1 lg:h-10 lg:px-2  text-gray-800 shadow-sm transition-all duration-300 ease-out hover:border-gray-500 hover:bg-gray-50 hover:text-black hover:shadow-md md:hover:px-3"
+            >
+              <IoBagAddOutline className="h-6 w-6 lg:h-7 lg:w-7 shrink-0 sm:h-6 sm:w-6" />
+
+              <span className="hidden max-w-0 overflow-hidden whitespace-nowrap text-sm font-medium opacity-0 transition-all duration-300 ease-out group-hover:max-w-20 group-hover:opacity-100 md:inline-block">
+                Add to Cart
+              </span>
             </button>
+
+
+
+
+
           </div>
         </div>
       </div>
@@ -142,7 +238,7 @@ const ProductCard = ({ item }) => {
       </div> */}
 
       {createPortal(
-        <div className={`fixed inset-0 z-999 flex items-center justify-center p-4 bg-black/40 transition-all duration-300 ease-out ${openBag ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+        <div className={`fixed inset-0 z-999 flex items-center justify-center p-10 bg-black/40 transition-all duration-300 ease-out ${openBag ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
           {/* Modal Box */}
           <div className={`relative w-full max-w-85 md:max-w-2xl bg-[#EBECEE] md:bg-white shadow-xl flex flex-col md:flex-row overflow-hidden transition-transform duration-300 ${openBag ? "scale-100" : "scale-95"}`}>
             {/* Close Button */}
@@ -158,10 +254,10 @@ const ProductCard = ({ item }) => {
             {/* Right: Details & Options */}
             <div className="w-full md:w-1/2 p-6 flex flex-col justify-around gap-3.5 text-black">
               <div>
-                <a onClick={goToProduct} href="#" className="text-xs font-medium border-b-2 border-[#00FFFF] pb-0.5 inline-block">
+                <a onClick={goToProduct} href="#" className="text-xs border-b-2 border-[#00FFFF] pb-0.5 inline-block">
                   See full product details
                 </a>
-                <h2 className="text-xl md:text-2xl font-black mt-2 tracking-tight">{item?.title}</h2>
+                <h2 className="lg:text-2xl md:text-xl text-lg font-semibold mt-2 tracking-tight">{item?.title}</h2>
                 <p className="text-sm font-semibold mt-1">₹ {Number(price).toLocaleString("en-IN")}.00</p>
               </div>
 
@@ -185,7 +281,7 @@ const ProductCard = ({ item }) => {
               </div>
 
               {/* CTA Button */}
-              <button onClick={() => addToCart(item._id)} className="w-full mt-2 py-2.5 bg-[#00FFFF] hover:bg-[#00e6e6] text-black font-bold rounded-full text-sm transition">Add to Bag</button>
+              <button onClick={() => addToCart(item._id)} className="w-full mt-2 py-2 lg:py-2.5 bg-[#00FFFF] hover:bg-[#00e6e6] text-black  rounded-full lg:text-sm text-sm transition">Add to Bag</button>  
             </div>
           </div>
         </div>,

@@ -56,6 +56,14 @@ const addItemToCart = async (req, res) => {
             })
         }
 
+         // Ek baar me bhi 5 se zyada allow nahi
+        if (Number(qty) > 5) {
+            return res.status(400).json({
+                success: false,
+                message: "Maximum quantity is 5"
+            })
+        }
+
         let cart = await cartModel.findOne({ user: userId })
 
         if (!cart) {

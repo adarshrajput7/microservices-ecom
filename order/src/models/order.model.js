@@ -77,6 +77,18 @@ const orderSchema = new mongoose.Schema({
     shippingAddress: {
         type: addressSchema,
         required:true
+    },
+
+    // ✅ payment update
+    payment: {
+        isPaid: {
+            type: Boolean,
+            default: false
+        },
+        paidAt: {
+            type: Date,
+            default: null
+        }
     }
 }, { timestamps: true })
 

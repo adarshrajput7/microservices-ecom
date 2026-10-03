@@ -12,3 +12,18 @@ export default defineConfig({
     },
   },
 })
+
+//change prot no
+
+// export default defineConfig({
+//   plugins: [react(), tailwindcss()],
+//   resolve: {
+//     alias: {
+//       "@": path.resolve(__dirname, "./src"),
+//     },
+//   },
+//   server: {
+//     port: 4000,               //ye
+//   },
+// })
+

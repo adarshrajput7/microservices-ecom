@@ -1,112 +1,116 @@
-import React, { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useState } from "react";
+import { FiChevronDown, FiChevronUp } from "react-icons/fi";
+import { FaFacebookF, FaXTwitter, FaInstagram, FaLinkedinIn, FaYoutube } from "react-icons/fa6";
+import toast from "react-hot-toast";
+import { Minus, Plus } from "lucide-react";
+
+const sections = [
+  { title: "Shop", links: [{ name: "An Ode to Cricket", href: "/cricket" }, { name: "Active Lifestyle", href: "/active" }, { name: "Cover Drive", href: "/cover-drive" }, { name: "Hybrid Workout", href: "/workout" }] },
+  { title: "one8", links: [{ name: "About one8", href: "/about" }, { name: "The one8 Promise", href: "/promise" }] },
+  { title: "Customer Support", links: [{ name: "Contact Us", href: "/contact" }, { name: "Return & Exchange", href: "/returns" }, { name: "FAQs", href: "/faqs" }] },
+  { title: "Account", links: [{ name: "Log In", href: "/login" }] },
+  { title: "Legal", links: [{ name: "Privacy Policy", href: "/privacy" }, { name: "Terms of Use", href: "/terms" }, { name: "Warranty Policy", href: "/warranty" }, { name: "Cookie Policy", href: "/cookies" }] },
+];
+
+const socials = [{ icon: FaFacebookF, href: "#" }, { icon: FaXTwitter, href: "#" }, { icon: FaInstagram, href: "#" }, { icon: FaLinkedinIn, href: "#" }, { icon: FaYoutube, href: "#" }];
 
 export default function Footer() {
-  const containerRef = useRef(null);
+  const [open, setOpen] = useState(null);
 
-  // Scroll tracking: Footer pichhle content ke upar smooth chadhega
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end end"],
-  });
+  const handleSubscribe = (e) => {
+    e.preventDefault();
 
-  const y = useTransform(scrollYProgress, [0, 1], [-120, 0]);
+    const email = e.target.email.value.trim();
 
-  const links = {
-    Shop: ["An Ode to Cricket", "Active Lifestyle", "Cover Drive", "Hybrid Workout"],
-    one8: ["About one8", "The one8 Promise"],
-    "Customer Support": ["Contact Us", "Return & Exchange Portal", "FAQs"],
-    Account: ["Log In"],
-    Legal: [
-      "Privacy Policy",
-      "Terms of Use",
-      "Warranty Policy",
-      "Return, Exchanges and Refund Policy",
-      "Cookie Policy",
-    ],
+    // Proper email validation
+    const emailRegex =
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+
+    if (!emailRegex.test(email)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+
+    toast.success("Subscribed successfully! 🎉");
   };
 
+
   return (
-    <footer
-      ref={containerRef}
-      className="relative z-20 w-full overflow-hidden bg-[#121212] text-white pt-14"
-    >
-      <motion.div style={{ y }} className="mx-auto max-w-7xl px-6 md:px-12">
-        {/* Newsletter Section */}
-        <div className="mb-14">
-          <h2 className="text-3xl sm:text-4xl font-black tracking-tight">
-            Join the one8 movement
-          </h2>
-          <p className="mt-2 text-sm text-gray-400">
-            Get exclusive drops, training tips, and stories that fuel your next breakthrough - straight to your inbox.
-          </p>
+    <footer className="px-5 lg:px-12 pt-10 bg-[#1a1a1a] text-white overflow-hidden">
+      <div>
+        <h2 className="text-2xl lg:text-3xl md:text-4xl font-bold pb-2">Join the one8 movement</h2>
+        <p className="text-neutral-400 text-sm md:text-base">Get exclusive drops, training tips, and stories that fuel your next breakthrough.</p>
+      </div>
 
-          <form onSubmit={(e) => e.preventDefault()} className="mt-8 flex flex-col sm:flex-row items-baseline gap-4">
-            <input
-              type="email"
-              placeholder="Enter your email address"
-              className="w-full max-w-xl border-b border-gray-700 bg-transparent py-2 text-lg sm:text-xl font-medium outline-none placeholder:text-gray-500 focus:border-white transition-colors"
-            />
-            <button
-              type="submit"
-              className="rounded-full bg-[#00F0FF] px-8 py-3 text-sm font-bold text-black hover:opacity-90 transition-opacity"
-            >
-              Join the newsletter
-            </button>
-          </form>
-        </div>
+      <form
+        onSubmit={handleSubscribe}
+        className="mt-10 flex flex-col sm:flex-row items-center gap-4 w-full"
+      >
+        <input
+          name="email"
+          type="email"
+          placeholder="Enter your email address"
+          required
+          autoComplete="email"
+          className="w-[95vw] sm:w-auto sm:flex-1 bg-transparent text-white text-xl md:text-4xl font-semibold px-4 py-4 border-b border-b-neutral-600 border-t-transparent border-x-transparent rounded-sm placeholder:text-neutral-500 focus:outline-none focus:border-[#00FFFF] transition-all duration-200"
+        />
 
-        {/* Links Grid */}
-        <div className="border-t border-[#222] py-12 grid grid-cols-2 gap-8 md:grid-cols-6">
-          {Object.entries(links).map(([title, items]) => (
-            <div key={title} className="flex flex-col gap-3">
-              <h3 className="text-sm font-bold text-white">{title}</h3>
-              <ul className="space-y-2 text-xs text-gray-400">
-                {items.map((item) => (
-                  <li key={item}>
-                    <a href="#" className="hover:text-white transition-colors">{item}</a>
-                  </li>
+        <button
+          type="submit"
+          className="w-[95vw] sm:w-auto bg-[#00FFFF] py-3.5 px-8 rounded-full text-black font-semibold hover:opacity-90 transition-opacity whitespace-nowrap"
+        >
+          Join the newsletter
+        </button>
+      </form>
+
+
+
+
+      <div className="lg:mt-16 mt-10 py-8 border-y border-white flex flex-col lg:flex-row justify-between gap-8">
+        <div className="flex-1 grid grid-cols-1 md:grid-cols-5 gap-6">
+          {sections.map((sec, idx) => (
+            <div key={idx} className="border-b  border-neutral-800 md:border-none pb-3 md:pb-0">
+              <button onClick={() => setOpen(open === idx ? null : idx)} className="w-full flex justify-between items-center text-left font-bold text-base md:cursor-default">
+                <span>{sec.title}</span>
+                <span className="md:hidden text-neutral-100">{open === idx ? <Minus /> : <Plus />}</span>
+              </button>
+              {/* <ul className={`space-y-2.5 text-sm text-neutral-400 mt-3 ${open === idx ? "block" : "hidden md:block"}`}>
+                {sec.links.map((link, i) => (
+                  <li key={i}><a href={link.href} className="hover:text-white transition-colors">{link.name}</a></li>
                 ))}
+              </ul> */}
+              <ul className={` space-y-2.5 text-sm text-neutral-400 mt-3 grid transition-[grid-template-rows] duration-300 ease-out ${open === idx ? "grid-rows-[1fr]" : "grid-rows-[0fr]"} md:grid-rows-[1fr]`}>
+                <div className="overflow-hidden">
+                  {sec.links.map((link, i) => (
+                    <li key={i}>
+                      <a href={link.href} className="block hover:text-white transition-colors duration-200">
+                        {link.name}
+                      </a>
+                    </li>
+                  ))}
+                </div>
               </ul>
+
             </div>
           ))}
+        </div>
 
-          {/* Social */}
-          <div className="flex flex-col gap-3">
-            <h3 className="text-sm font-bold text-white">Follow</h3>
-            <p className="text-xs text-gray-400">Connect with us on our social channels</p>
-            <div className="mt-1 flex items-center gap-2">
-              {["f", "X", "in", "yt"].map((icon, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-[10px] font-bold text-black hover:scale-110 transition-transform"
-                >
-                  {icon}
-                </a>
-              ))}
-            </div>
+        <div className="lg:w-64 lg:border-l lg:border-white lg:pl-8">
+          <h4 className="font-bold text-base mb-2">Follow</h4>
+          <p className="text-sm text-neutral-400 mb-4">Connect with us on our social channels</p>
+          <div className="flex items-center gap-3">
+            {socials.map((item, i) => (
+              <a key={i} href={item.href} className="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center hover:bg-[#00FFFF] transition-colors"><item.icon size={15} /></a>
+            ))}
           </div>
         </div>
+      </div>
 
-        {/* Bottom Bar */}
-        <div className="border-t border-[#1f1f1f] py-6 flex flex-wrap items-center justify-between gap-4 text-xs text-gray-400">
-          <p>© one8 2026</p>
-          <div className="flex items-center gap-2">
-            <span className="rounded bg-[#0070d2] px-2 py-0.5 text-[10px] font-bold text-white">AMEX</span>
-            <span className="rounded bg-[#00579f] px-2 py-0.5 text-[10px] font-bold text-white">VISA</span>
-            <span className="rounded bg-[#eb001b] px-2 py-0.5 text-[10px] font-bold text-white">MC</span>
-            <span className="rounded bg-gray-800 px-2 py-0.5 text-[10px] font-bold text-white">RuPay</span>
-          </div>
-        </div>
 
-        {/* Large "one8" Watermark */}
-        <div className="pointer-events-none select-none text-center leading-none">
-          <span className="inline-block text-[25vw] font-black tracking-tighter text-[#1a1a1a]">
-            one8
-          </span>
-        </div>
-      </motion.div>
+
+      <div className="w-full lg:h-[60vh] flex items-end justify-center overflow-hidden select-none">
+        <p className="text-[#383838] font-serif leading-[0.7] translate-y-[8%]" style={{ fontSize: "40vw" }}>one8</p>
+      </div>
     </footer>
   );
 }

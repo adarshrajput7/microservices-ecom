@@ -61,7 +61,7 @@ const registerUser = async (req, res) => {
         })
 
         return res.status(201).json({
-            message: "User registered successfully",
+            message: "Account created successfully",
             success: true,
             user: {
                 id: user._id,
@@ -79,7 +79,7 @@ const registerUser = async (req, res) => {
     }
 }
 
-const loginUser = async (req, res) => {
+const loginUser = async (req, res,expectedRole) => {
     try {
         const { usernameOrEmail, password } = req.body
 
@@ -93,6 +93,14 @@ const loginUser = async (req, res) => {
         if (!user) {
             return res.status(401).json({
                 message: "User not exists",
+                success: false
+            })
+        }
+
+         // Role check
+        if (user.role !== expectedRole) {
+            return res.status(403).json({
+                message: `Please login from ${user.role} dashboard`,
                 success: false
             })
         }
@@ -176,7 +184,7 @@ const logoutUser = async (req, res) => {
 
         return res.status(200).json(
             {
-                message: "Logged out successfully",
+                message: "Logged out",
                 success: true
             }
         )
@@ -255,7 +263,7 @@ const addUserAddress = async (req, res) => {
         }
 
         return res.status(201).json({
-            message: "Address added successfully",
+            message: "Address added",
             address: user.addresses[user.addresses.length - 1],
             user,
             success:true
@@ -302,7 +310,7 @@ const deleteUserAddress = async (req, res) => {
         }
 
         return res.status(200).json({
-            message: "Address deleted successfully",
+            message: "Address deleted",
             addresses: user.addresses,
             user,
             success: true

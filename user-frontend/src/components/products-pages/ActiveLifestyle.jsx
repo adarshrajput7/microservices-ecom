@@ -61,7 +61,18 @@ const ActiveLifestyle = ({ filters }) => {
     const handlePrev = () => setPage((p) => Math.max(p - 1, 1));
     const handleNext = () => setPage((p) => Math.min(p + 1, totalPages));
 
-    if (loading) return <p className="p-5">Loading...</p>;
+    // if (loading) return <p className="p-5">Loading...</p>;
+    if (loading) {
+            return (
+                <div className="flex-1 p-3">
+                    <div className="grid md:grid-cols-3 grid-cols-2 lg:gap-4 gap-2 lg:mt-20">
+                        {Array.from({ length: LIMIT }).map((_, index) => (
+                            <ProductCard key={index} item={null} />
+                        ))}
+                    </div>
+                </div>
+            );
+        }
     if (error) return <p className="p-5 text-red-500">Error: {error}</p>;
 
     return (

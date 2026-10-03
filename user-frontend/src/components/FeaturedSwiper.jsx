@@ -107,7 +107,8 @@
 import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, FreeMode } from "swiper/modules";
+// import { Navigation, FreeMode } from "swiper/modules";
+import { FreeMode } from "swiper/modules"; 
 import { Infinity as InfinityIcon } from "lucide-react"; // Lucide Icon
 
 import "swiper/css";
@@ -117,7 +118,7 @@ import ProductCard from "./products-pages/ProductCard";
 
 const LIMIT = 12;
 
-const FeaturedSwiper = ({headingTitle}) => {
+const FeaturedSwiper = ({ headingTitle }) => {
     const [products, setProducts] = useState([]);
     const [progress, setProgress] = useState(0);
     const [activeIndex, setActiveIndex] = useState(1);
@@ -140,9 +141,9 @@ const FeaturedSwiper = ({headingTitle}) => {
 
     return (
         <div className="w-full py-6 px-4 select-none">
-            <h1 className="text-center text-2xl font-bold mb-4">{ headingTitle}</h1>
+            <h1 className="text-center text-2xl font-bold mb-4">{headingTitle}</h1>
 
-            <Swiper
+            {/* <Swiper
                 onSwiper={(s) => (swiperRef.current = s)}
                 onProgress={(_, prog) => setProgress(prog)}
                 onSlideChange={(s) => setActiveIndex(s.realIndex + 1)}
@@ -156,7 +157,34 @@ const FeaturedSwiper = ({headingTitle}) => {
                     1024: { slidesPerView: 3.5 },
                     1280: { slidesPerView: 4.5 },
                 }}
+            > */}
+
+            <Swiper
+                onSwiper={(s) => (swiperRef.current = s)}
+                onProgress={(_, prog) => setProgress(prog)}
+                onSlideChange={(s) => setActiveIndex(s.realIndex + 1)}
+                modules={[FreeMode]}
+                spaceBetween={16}
+                slidesPerView={1.2}
+
+                freeMode={{
+                    enabled: true,
+                    momentum: true,
+                    momentumRatio: 0.8,
+                    momentumVelocityRatio: 0.8,
+                }}
+
+                speed={700}
+                grabCursor={true}
+
+                breakpoints={{
+                    480: { slidesPerView: 1.5 },
+                    640: { slidesPerView: 2.5 },
+                    1024: { slidesPerView: 3.5 },
+                    1280: { slidesPerView: 4.5 },
+                }}
             >
+
                 {products.map((item) => (
                     <SwiperSlide key={item.id}>
                         <ProductCard item={item} />
@@ -181,9 +209,9 @@ const FeaturedSwiper = ({headingTitle}) => {
                 >
                     {/* Patli line (1.5px) */}
                     <div className="w-full h-2 bg-neutral-200">
-                        <div 
-                            className="h-full bg-black" 
-                            style={{ width: `${progress * 100}%` }} 
+                        <div
+                            className="h-full bg-black"
+                            style={{ width: `${progress * 100}%` }}
                         />
                     </div>
 

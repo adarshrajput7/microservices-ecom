@@ -3,10 +3,10 @@ import { FiMenu, FiX, FiSearch, FiUser } from "react-icons/fi";
 import { MdOutlineShoppingBag } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Search, X } from "lucide-react";
 import { Button } from "./ui/button";
-import { IoIosArrowRoundForward, IoIosRemoveCircleOutline } from "react-icons/io";
+import { IoIosArrowRoundForward } from "react-icons/io";
 import axios from "axios";
 import { useCart } from "./cart/CartContext";
 import { setSearchOpen } from "@/redux/authSlice";
@@ -14,23 +14,42 @@ import { setSearchOpen } from "@/redux/authSlice";
 const Navbar = ({ transparent }) => {
   const navigate = useNavigate();
   const { user, isSearchOpen } = useSelector((store) => store.auth);
-  const [qty, setQty] = useState(1);
+  // const [qty, setQty] = useState(1);
   const { cartItems } = useCart();
-  console.log("yera merks kj", cartItems);
   const dispatch = useDispatch()
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [bagOpen, setBagOpen] = useState(false);
 
   useEffect(() => {
+    const shouldLock = menuOpen || isSearchOpen;
+
+    if (shouldLock) {
+      window.lenis?.stop();
+      document.body.style.overflow = "hidden";
+    } else {
+      window.lenis?.start();
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      window.lenis?.start();
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen, isSearchOpen]);
+
+
+
+
+  useEffect(() => {
     const getCartProducts = async () => {
       try {
         const cartRes = await axios.get("http://localhost:3002/api/cart/", { withCredentials: true });
         const items = cartRes.data.cart.items;
-        console.log("💗 Cart Items:", items);
+        // console.log("💗 Cart Items:", items);
 
         const productIds = items.map((item) => item.productId);
-        console.log("💗 Product IDs:", productIds);
+        // console.log("💗 Product IDs:", productIds);
 
         const productResponses = await Promise.all(
           productIds.map((productId) =>
@@ -39,7 +58,7 @@ const Navbar = ({ transparent }) => {
         );
 
         const products = productResponses.filter((res) => res.data.success).map((res) => res.data.data);
-        console.log("💗 All Products:", products);
+        // console.log("💗 All Products:", products);
       } catch (error) {
         console.error("🚀 ~ getCartProducts ~ error:", error);
       }
@@ -49,41 +68,52 @@ const Navbar = ({ transparent }) => {
   }, []);
 
   return (
-    <nav className={`fixed top-0 left-0 w-full z-200 ${transparent ? "bg-transparent text-white" : "bg-white text-black"}`}>
+    // <nav className={`fixed top-0 left-0 w-full z-200 ${transparent ? "bg-transparent text-white" : "bg-white text-black"}`}>
+    <nav className={`absolute top-0 left-0 w-full z-200 ${menuOpen ? "bg-white text-black!" : ''} ${transparent ? "lg:bg-transparent text-white lg:text-white hover:bg-white hover:text-black" : "bg-white text-black"} group`}>
 
-      <div className="relative flex items-center justify-between px-5 lg:px-10 py-5">
+      <div className="relative flex items-center justify-between px-4 lg:px-10 py-4">
 
         {/* LEFT */}
         <div className="flex items-center gap-4">
 
           {/* Hamburger */}
-          <button onClick={() => setMenuOpen(true)} className="lg:hidden">
+          {menuOpen ? <button onClick={() => setMenuOpen(false)} className="lg:hidden self-end ">
+            <FiX size={28} />
+          </button> : <button onClick={() => setMenuOpen(true)} className="lg:hidden">
             <FiMenu size={28} />
-          </button>
+          </button>}
 
           {/* Search Icon */}
           {isSearchOpen ? <X size={27} onClick={() => dispatch(setSearchOpen(false))} className="lg:hidden cursor-pointer" /> : <FiSearch size={27} onClick={() => dispatch(setSearchOpen(true))} className="lg:hidden cursor-pointer" />}
           {/* <FiSearch size={27} onClick={() => dispatch(setSearchOpen(true))} className="lg:hidden cursor-pointer" /> */}
 
           {/* SAME MENU */}
-          <div className={`flex gap-6 fixed lg:static top-0 z-300 left-0 h-full lg:h-auto w-full lg:w-auto flex-col lg:flex-row items-start lg:items-center bg-white lg:bg-transparent p-6 lg:p-0 transition-transform duration-300 ${menuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
+          <div className={`flex gap-6 fixed lg:static top-0 z-50 left-0 h-full mt-15 lg:mt-0 lg:h-auto w-full lg:w-auto flex-col lg:flex-row items-start lg:items-center bg-white  lg:bg-transparent p-6 lg:p-0 transition-transform duration-300 ${menuOpen ? "translate-x-0 flex justify-between" : "-translate-x-full lg:translate-x-0"}`}>
 
             {/* Close */}
-            <button onClick={() => setMenuOpen(false)} className="lg:hidden self-end mb-8">
+            {/* <button onClick={() => setMenuOpen(false)} className="lg:hidden self-end mb-2">
               <FiX size={28} />
-            </button>
+            </button> */}
 
             {/* MENU ITEMS */}
-            <div className="lg:flex gap-5 cursor-pointer text-4xl lg:text-base font-medium">
-              <p onClick={() => navigate("/collections")}>Featured</p>
-              <p onClick={() => navigate("/collections-all-women")}>Women</p>
-              <p onClick={() => navigate("/collections-all-men")}>Men</p>
+            <div className={`lg:flex w-full gap-5 z-300 cursor-pointer text-4xl lg:text-base font-medium ${menuOpen ? "text-gray-500 pl-1 flex flex-col mt-5" : ''}`}>
+              <p onClick={() => { navigate("/collections"); setMenuOpen(false) }} className="flex justify-between items-center"><span>Featured</span> <IoIosArrowRoundForward  className={`${menuOpen ? '': "hidden"}`} /></p>
+              <p onClick={() => {navigate("/collections-all-women"); setMenuOpen(false)}} className="flex justify-between items-center"><span>Women</span> <IoIosArrowRoundForward  className={`${menuOpen ? '': "hidden"}`} /></p>
+              <p onClick={() =>{ navigate("/collections-all-men"); setMenuOpen(false)}} className="flex justify-between items-center"><span>Men</span> <IoIosArrowRoundForward  className={`${menuOpen ? '': "hidden"}`} /></p>
+            </div>
+
+            <div className={`mb-15 text-gray-600 text-xs flex flex-col gap-2 ${menuOpen ? '': "hidden"}`}>
+              <p>About us</p>
+              <p>My account</p>
+              <p>Cart</p>
+              <p>Contact us</p>
+              <p>Return policy</p>
             </div>
           </div>
 
           {/* Overlay */}
           {menuOpen && (
-            <div onClick={() => setMenuOpen(false)} className="fixed inset-0 bg-black/50 lg:hidden" />
+            <div onClick={() => setMenuOpen(false)} className="fixed inset-0 lg:hidden" />
           )}
         </div>
 
@@ -102,28 +132,17 @@ const Navbar = ({ transparent }) => {
         <div className="flex items-center gap-4">
 
           {/* Desktop Search */}
-          {/* <input type="text" placeholder="Search For Products" className={`hidden lg:block w-52 border-2 bg-transparent px-4 py-1.5 rounded outline-none ${transparent ? "border-white placeholder:text-white" : "border-black placeholder:text-black"}`} /> */}
-          {/* <input
-            type="text"
-            placeholder="Search For Products"
-            onClick={() => dispatch(setSearchOpen(true))}
-            className={`hidden lg:block w-52 border-2 bg-transparent px-4 py-1.5 rounded outline-none z-10000 ${transparent
-                ? "border-white placeholder:text-white"
-                : "border-black placeholder:text-black"
-              }`}
-          /> */}
-
           <div onClick={() => dispatch(setSearchOpen(true))}
-            className={`hidden lg:flex items-center gap-2 w-52 border-2 bg-transparent px-3 py-1.5 rounded cursor-pointer z-10000 ${transparent ? "border-white" : "border-black"}`}>
-            <Search size={18} className={transparent ? "text-white" : "text-black"}
+            className={`hidden lg:flex items-center gap-2 w-80 border-2 bg-transparent px-3 py-1.5 rounded cursor-pointer z-10000 ${transparent ? "border-white group-hover:border-black" : "border-black"}`}>
+            <Search size={18} className={transparent ? "text-white group-hover:text-black" : "text-black"}
             />
-            <input type="text" readOnly placeholder="Search For Products" className={`w-full bg-transparent outline-none cursor-pointer ${transparent ? "placeholder:text-white text-white" : "placeholder:text-black text-black"}`}/>
+            <input type="text" readOnly placeholder="Search For Products" className={`w-full bg-transparent outline-none cursor-pointer ${transparent ? "placeholder:text-white text-white group-hover:placeholder:text-black " : "placeholder:text-black text-black"}`} />
           </div>
 
 
 
           {/* Cart */}
-          <div className="relative cursor-pointer" onClick={() => setBagOpen(true)}>
+          <div className="relative cursor-pointer" onClick={() => navigate('/cart')}>
             <MdOutlineShoppingBag size={29} />
             {cartItems.length > 0 && (
               <span className="absolute -right-2 -bottom-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#00FFFF] text-xs font-bold text-black">{cartItems.length}</span>
@@ -139,7 +158,7 @@ const Navbar = ({ transparent }) => {
               </Button>
             </div>
 
-            <div className="max-h-[80vh] overflow-y-auto w-full pb-20">
+            {/* <div className="max-h-[80vh] overflow-y-auto w-full pb-20">
               {cartItems.map((item) => (
                 <div key={item.cartItemId} className="w-full flex h-50 border-b-2 border-gray-600">
                   <div className="w-1/2 p-3">
@@ -160,7 +179,7 @@ const Navbar = ({ transparent }) => {
                   </div>
                 </div>
               ))}
-            </div>
+            </div> */}
 
             <button className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full w-[calc(100%-2rem)] text-black py-3 bg-[#00FFFF] font-bold flex items-center justify-center">Continue Order <IoIosArrowRoundForward size={30} /></button>
           </div>
@@ -168,8 +187,15 @@ const Navbar = ({ transparent }) => {
           {/* User */}
           {user ? (
             <Avatar onClick={() => navigate("/profile")} className="cursor-pointer">
-              <AvatarImage src="https://github.com/shadcn.png" alt="Profile" />
-              <AvatarFallback>CN</AvatarFallback>
+              {/* <AvatarImage src="https://github.com/shadcn.png" alt="Profile" /> */}
+              {/* <AvatarFallback>CN</AvatarFallback> */}
+              <AvatarFallback className="relative overflow-hidden bg-blue-500/20 backdrop-blur-xl border border-blue-300/40 text-blue-900 dark:text-blue-100 font-bold text-lg shadow-lg">
+                <span className="absolute inset-0 bg-gradient-to-br from-blue-400/30 to-cyan-400/30"></span>
+                <span className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/40 to-transparent"></span>
+                <span className="relative z-10">
+                  {user?.fullName?.firstName?.[0]?.toUpperCase() || "U"}
+                </span>
+              </AvatarFallback>
             </Avatar>
           ) : (
             <FiUser size={29} className="cursor-pointer" onClick={() => navigate("/login")} />

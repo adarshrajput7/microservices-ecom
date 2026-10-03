@@ -7,7 +7,10 @@ import validation from '../middlewares/validation.middleware.js'
 const router = express.Router()
 
 
-router.post('/',createAuthMiddleware(['user']),validation.createOrderValidation,orderController.createOrder)
+router.post('/', createAuthMiddleware(['user']), validation.createOrderValidation, orderController.createOrder)
+
+// for payment update
+router.patch('/pay/:orderId',createAuthMiddleware(['user']),orderController.updatePayment)
 
 router.get("/me", createAuthMiddleware(['user']), orderController.getMyOrder)
 

@@ -152,3 +152,42 @@
 .scroll-x-custom::-webkit-scrollbar-thumb:hover {
   background: #6b7280;
 }
+
+
+
+
+.page-transition {
+  animation: pageFade 0.4s ease;
+}
+
+@keyframes pageFade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+
+@font-face {
+  font-family: "Outfit";
+  src: url("/fonts/Outfit.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-outfit: "Outfit", sans-serif;
+}
+
+
+
+
+

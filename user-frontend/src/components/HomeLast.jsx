@@ -57,11 +57,13 @@
 
 
 
+import { useNavigate } from 'react-router-dom'
 import menWear from '../assets/category-images/men-wear.png'
 import womenWear from '../assets/category-images/women-weaar.png'
 // import fashionImg from '../assets/category-images/fashion.png'
 
 const HomeLast = () => {
+    const navigate = useNavigate()
     return (
         <>
             <div className="flex flex-col lg:flex-row w-[98vw] min-h-screen lg:h-screen overflow-hidden mt-10 mb-5 gap-10 lg:gap-0">
@@ -81,7 +83,7 @@ const HomeLast = () => {
                         <h1 className='text-2xl font-bold'>Menswear</h1>
                         <p className='text-sm'>Movement in every form</p>
 
-                        <button className="px-6 py-3 bg-black text-white rounded-full mt-3">
+                        <button onClick={()=>navigate('/collections-all-men')} className="px-6 py-3 bg-black text-white rounded-full mt-3">
                             Shop Now
                         </button>
                     </div>
@@ -103,7 +105,7 @@ const HomeLast = () => {
                         <h1 className='text-2xl font-bold'>Womenswear</h1>
                         <p className='text-sm'>Movement in every form</p>
 
-                        <button className="px-6 py-3 bg-black text-white rounded-full mt-3">
+                        <button onClick={()=>navigate('/collections-all-men')} className="px-6 py-3 bg-black text-white rounded-full mt-3">
                             Shop Now
                         </button>
                     </div>
@@ -116,14 +118,14 @@ const HomeLast = () => {
             <div>
                 <img
                     // src={fashionImg}
-                    src='https://images.unsplash.com/photo-1483181957632-8bda974cbc91?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                    src='https://plus.unsplash.com/premium_photo-1668485967921-117d77bb7779?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
                     alt=""
-                    className="w-full h-[80vh] object-cover aspect-video"
+                    className="w-full h-[90vh] object-cover aspect-video"
                 />
-                <div className='flex flex-col gap-2 items-center py-5'>
+                <div className='flex flex-col gap-2 items-center py-5 px-4'>
                     <h1 className='text-2xl font-bold'>An Ode to Passion</h1>
                     <p className='text-sm'>"A collection built around the heritage of style. Find one that's yours."</p>
-                    <button className='px-8 p-3 border-2 border-black rounded-full hover:bg-black hover:text-white transition-all'>View The Collection</button>
+                    <button onClick={()=>navigate('/collections')} className='px-8 p-3 border-2 border-black rounded-full hover:bg-black hover:text-white transition-all'>View The Collection</button>
                 </div>
             </div>
 

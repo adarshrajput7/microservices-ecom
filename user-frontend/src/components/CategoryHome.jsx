@@ -8,6 +8,7 @@ import "swiper/css/navigation";
 import "swiper/css/free-mode";
 
 import clothesImg from "../assets/category-images/clothes-image.png";
+import clotheImg from "../assets/category-images/clothe-image.png";
 import activeImg from "../assets/category-images/active-life-image.png";
 import footwearImg from "../assets/category-images/footwear-image.png";
 import mobileImg from "../assets/category-images/mobile-image.png";
@@ -15,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 
 const categories = [
   { id: 1, title: "Footwear", img: footwearImg, path:"/collections-footwear" },
-  { id: 2, title: "Clothing", img: clothesImg, path:"/collections-clothing" },
+  { id: 2, title: "Clothing", img: clotheImg, path:"/collections-clothing" },
   { id: 3, title: "Accessories", img: mobileImg, path: "/collections-mobiles"},
   { id: 4, title: "Active Lifestyle", img: activeImg, path:"/collections-lifestyle" },
 ];
@@ -47,7 +48,7 @@ const CategoryHome = () => {
     />
 
     {/* Modern Overlay */}
-    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-90" />
+    <div className="absolute inset-0 bg-linear-to-t from-black/50 via-black/5 to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-90" />
 
     {/* Title */}
     <p className="absolute top-[8%] left-1/2 -translate-x-1/2 text-xl md:text-2xl text-white font-bold text-center drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] whitespace-nowrap transition-all duration-500 group-hover:tracking-wide">

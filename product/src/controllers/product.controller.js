@@ -290,7 +290,7 @@ const getProducts = async (req, res) => {
         const skip = (parsedPage - 1) * parsedLimit;
 
         const [products, totalProducts] = await Promise.all([
-            productModel.find(filter).skip(skip).limit(parsedLimit),
+            productModel.find(filter).sort({ createdAt: -1 }).skip(skip).limit(parsedLimit),
             productModel.countDocuments(filter)
         ]);
 
@@ -316,8 +316,6 @@ const getProducts = async (req, res) => {
         });
     }
 };
-
-
 
 const getProductById = async (req, res) => {
     try {

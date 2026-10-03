@@ -1,29 +1,40 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import ProductCard from "./ProductCard";
-import { setFilter } from "@/redux/filterSlice";
-import { useDispatch } from "react-redux";
+// import { setFilter } from "@/redux/filterSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useSearchParams } from "react-router-dom";
+import { setProductsRedux } from "@/redux/productsSlice";
+import ProductCard from "./products-pages/ProductCard";
 
 const LIMIT = 12;
 
-const Footwear = ({ filters }) => {
-    const [page, setPage] = useState(1);
+const SearchView = ({ filters }) => {
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    // URL se initial page read karo
+    const initialPage = Number(searchParams.get("page")) || 1;
+    const [page, setPage] = useState(initialPage);
+
     const [products, setProducts] = useState([]);
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const dispatch = useDispatch()
-
-    // useEffect(() => { setPage(1); }, [filters]);  
-    const categoryData = "FOOTWEAR"
+    const {searchDataRedux} = useSelector((store)=>store.auth)
+    const dispatch = useDispatch();
+    const search = searchDataRedux
+    console.error("🚀 ~ SearchView ~ search:", search)
 
     const [prevFilters, setPrevFilters] = useState(filters);
     if (filters !== prevFilters) {
         setPrevFilters(filters);
         setPage(1);
+        setSearchParams({ page: 1 }); // filter change hone par URL bhi reset
     }
 
-    dispatch(setFilter(products))
+    useEffect(() => {
+        // dispatch(setFilter(products));
+        dispatch(setProductsRedux(products))
+    }, [products, dispatch]);
 
     useEffect(() => {
         const getProducts = async () => {
@@ -32,22 +43,19 @@ const Footwear = ({ filters }) => {
                 setError(null);
 
                 const params = new URLSearchParams();
+                if (search) params.set("q", search);
                 if (filters?.price) {
                     params.set("minprice", filters.price.min);
                     params.set("maxprice", filters.price.max);
                 }
-                params.set("category", categoryData);
-                if (filters?.category) params.set("category", filters.category);
                 if (filters?.gender) params.set("gender", filters.gender);
-                // if (filters.size) params.set("size", filters.size);
+                if (filters?.category) params.set("category", filters.category);
                 params.set("page", page);
                 params.set("limit", LIMIT);
 
                 const res = await axios.get(`http://localhost:3001/api/product/?${params}`);
-
-                setProducts(res.data.data);                          // ✅ products
-                setTotalPages(res.data.pagination.totalPages);       // ✅ FIX — pagination object se
-                
+                setProducts(res.data.data);
+                setTotalPages(res.data.pagination.totalPages);
             } catch (err) {
                 console.error("🚀 ~ getProducts ~ error:", err);
                 setError(err.message);
@@ -58,37 +66,45 @@ const Footwear = ({ filters }) => {
         getProducts();
     }, [filters, page]);
 
+    // Page change hone par URL update karo
+    useEffect(() => {
+        setSearchParams({ page });
+    }, [page, setSearchParams]);
+
     const handlePrev = () => setPage((p) => Math.max(p - 1, 1));
     const handleNext = () => setPage((p) => Math.min(p + 1, totalPages));
 
     // if (loading) return <p className="p-5">Loading...</p>;
     if (loading) {
-            return (
-                <div className="flex-1 p-3">
-                    <div className="grid md:grid-cols-3 grid-cols-2 lg:gap-4 gap-2 lg:mt-20">
-                        {Array.from({ length: LIMIT }).map((_, index) => (
-                            <ProductCard key={index} item={null} />
-                        ))}
-                    </div>
+        return (
+            <div className="flex-1 p-3">
+                <div className="grid md:grid-cols-3 grid-cols-2 lg:gap-4 gap-2 lg:mt-20">
+                    {Array.from({ length: LIMIT }).map((_, index) => (
+                        <ProductCard key={index} item={null} />
+                    ))}
                 </div>
-            );
-        }
+            </div>
+        );
+    }
+
+    if (error) return <p className="p-5 text-red-500">Error: {error}</p>;
+
     if (error) return <p className="p-5 text-red-500">Error: {error}</p>;
 
     return (
-      <div className="flex-1 p-1 lg:mt-20">
-            <h1 className="text-xl sm:text-2xl lg:text-4xl pb-1 font-sans">
-                Footwear - All {" "}
-                <span className="text-sm sm:text-base lg:text-xl text-gray-500">
-                    {products.length} Products
+        <div className="flex-1 p-3 lg:mt-20">
+            <h1 className="text-xl lg:text-2xl pb-1 font-bold text-center">   
+                <span className="text-sm sm:text-base font-light lg:text-xl text-gray-500">
+                    {products.length} {' '}Results found for 
                 </span>
+                "{search}"
             </h1>
-            <div className="grid md:grid-cols-3 grid-cols-2 gap-4 lg:mt-20">
+            <div className="grid md:grid-cols-3 grid-cols-2 gap-4 lg:mt-10">
                 {products.length === 0 ? (
                     <p>No products found</p>
                 ) : (
-                    products.map((item) => (
-                        <ProductCard item={item} key={item.id} />
+                    products.map((item, index) => (
+                        <ProductCard item={item} key={item.id} index={index} />
                     ))
                 )}
             </div>
@@ -102,4 +118,4 @@ const Footwear = ({ filters }) => {
     );
 };
 
-export default Footwear;
+export default SearchView;

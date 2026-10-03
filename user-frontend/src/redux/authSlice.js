@@ -32,7 +32,8 @@ const authSlice = createSlice({
     initialState: {
         loading: true,
         user: null,
-        isSearchOpen: false
+        isSearchOpen: false,
+        searchDataRedux: ""
     },
 
     reducers: {
@@ -55,6 +56,10 @@ const authSlice = createSlice({
         setSearchOpen: (state, action) => {
             state.isSearchOpen  = action.payload;
         },
+
+        setSearchDataRedux: (state, action) => {
+            state.searchDataRedux = action.payload;
+        }
     },
 });
 
@@ -63,7 +68,8 @@ export const {
     setUser,
     logout,
     setLoading,
-    setSearchOpen
+    setSearchOpen,
+    setSearchDataRedux
 } = authSlice.actions;
 
 // Ye reducer store mein jayega

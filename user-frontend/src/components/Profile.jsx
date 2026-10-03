@@ -1,13 +1,15 @@
 import { useDispatch, useSelector } from "react-redux";
-import { MapPin, Phone, Check, Trash, Loader, LogOut, Save, SquarePlus, Loader2, ArrowRight, LucideTruck } from "lucide-react";
+import { MapPin, Phone, Check, Trash, Loader, LogOut, Save, SquarePlus, Loader2, ArrowRight, LucideTruck, ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
 // import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, } from "./ui/alert-dialog";
 import { useState } from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { logout, setLoading, setUser } from "@/redux/authSlice";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import Order from "./cart/Orders";
+import toast from "react-hot-toast";
 
 const Profile = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -127,12 +129,7 @@ const Profile = () => {
     }
 
     if (!user) {
-        return (
-            <div className="flex min-h-[50vh] items-center justify-center">
-                <Loader className="animate-spin" />
-                <p className="text-xl text-slate-500">Loading profile...</p>
-            </div>
-        );
+        return <Navigate to="/login" replace />;
     }
 
     const firstName = user.fullName?.firstName || "";
@@ -140,13 +137,20 @@ const Profile = () => {
 
     // const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
 
+
+
     return (
         <section className="flex min-h-[50vh] items-center justify-center bg-slate-50 p-4 sm:p-6 mt-20">
-            
+
+
 
             <div className="w-full max-w-4xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)]">
-                
-                <Button className={`w-1/2  lg:mt-10 mt-5 bg-gray-900 text-gray-50 hover:bg-gray-800`}>View My Orders <LucideTruck /> <ArrowRight /></Button>
+
+                <div className="flex items-center p-3 gap-1 text-sm text-gray-600">
+                    <span onClick={()=>navigate('/')}>Home</span><ChevronRight size={14} /><span className="text-gray-600">Profile</span>
+                </div>
+
+                <Button variant="none" onClick={() => navigate('/cart/order')} className={`lg:w-1/4 ml-4 lg:mt-10 mt-5 bg-gray-100  hover:bg-gray-200`}>View My Orders <LucideTruck /> <ArrowRight /></Button>
 
                 {/* Content */}
                 <div className="p-5 sm:p-8 items-center">
@@ -276,45 +280,107 @@ const Profile = () => {
                                         <h2 className="text-lg font-semibold"> Add Address </h2>
                                     </AlertDialogHeader>
 
-                                    <div className="space-y-3">
-                                        <input type="text" placeholder="Street"
-                                            name="street" value={editAddress.street}
-                                            onChange={editAddressEvent}
-                                            className="w-full rounded-md border p-2.5 text-sm outline-none focus:border-cyan-400" />
 
-                                        <input type="text" placeholder="City"
-                                            name="city" value={editAddress.city}
-                                            onChange={editAddressEvent}
-                                            className="w-full rounded-md border p-2.5 text-sm outline-none focus:border-cyan-400" />
+                                    <div className="space-y-2.5">
+                                        <div>
+                                            <label htmlFor="street" className="mb-1 block text-xs font-medium text-gray-600">
+                                                Street
+                                            </label>
+                                            <input
+                                                id="street"
+                                                type="text"
+                                                placeholder="Street"
+                                                name="street"
+                                                value={editAddress.street}
+                                                onChange={editAddressEvent}
+                                                className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm outline-none transition focus:border-cyan-400"
+                                            />
+                                        </div>
 
-                                        <input type="text" placeholder="State"
-                                            name="state" value={editAddress.state}
-                                            onChange={editAddressEvent}
-                                            className="w-full rounded-md border p-2.5 text-sm outline-none focus:border-cyan-400" />
+                                        <div>
+                                            <label htmlFor="city" className="mb-1 block text-xs font-medium text-gray-600">
+                                                City
+                                            </label>
+                                            <input
+                                                id="city"
+                                                type="text"
+                                                placeholder="City"
+                                                name="city"
+                                                value={editAddress.city}
+                                                onChange={editAddressEvent}
+                                                className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm outline-none transition focus:border-cyan-400"
+                                            />
+                                        </div>
 
-                                        <input type="text" placeholder="Pincode"
-                                            name="pincode" value={editAddress.pincode}
-                                            onChange={editAddressEvent}
-                                            className="w-full rounded-md border p-2.5 text-sm outline-none focus:border-cyan-400" />
+                                        <div>
+                                            <label htmlFor="state" className="mb-1 block text-xs font-medium text-gray-600">
+                                                State
+                                            </label>
+                                            <input
+                                                id="state"
+                                                type="text"
+                                                placeholder="State"
+                                                name="state"
+                                                value={editAddress.state}
+                                                onChange={editAddressEvent}
+                                                className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm outline-none transition focus:border-cyan-400"
+                                            />
+                                        </div>
 
-                                        <input type="text" placeholder="Country"
-                                            name="country" value={editAddress.country}
-                                            onChange={editAddressEvent}
-                                            className="w-full rounded-md border p-2.5 text-sm outline-none focus:border-cyan-400" />
+                                        <div>
+                                            <label htmlFor="pincode" className="mb-1 block text-xs font-medium text-gray-600">
+                                                Pincode
+                                            </label>
+                                            <input
+                                                id="pincode"
+                                                type="text"
+                                                placeholder="Pincode"
+                                                name="pincode"
+                                                value={editAddress.pincode}
+                                                onChange={editAddressEvent}
+                                                className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm outline-none transition focus:border-cyan-400"
+                                            />
+                                        </div>
 
-                                        <input type="text" placeholder="Phone"
-                                            name="phone" value={editAddress.phone}
-                                            onChange={editAddressEvent}
-                                            className="w-full rounded-md border p-2.5 text-sm outline-none focus:border-cyan-400" />
+                                        <div>
+                                            <label htmlFor="country" className="mb-1 block text-xs font-medium text-gray-600">
+                                                Country
+                                            </label>
+                                            <input
+                                                id="country"
+                                                type="text"
+                                                placeholder="Country"
+                                                name="country"
+                                                value={editAddress.country}
+                                                onChange={editAddressEvent}
+                                                className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm outline-none transition focus:border-cyan-400"
+                                            />
+                                        </div>
 
-                                        <label className="flex items-center gap-2 text-sm">
+                                        <div>
+                                            <label htmlFor="phone" className="mb-1 block text-xs font-medium text-gray-600">
+                                                Phone
+                                            </label>
+                                            <input
+                                                id="phone"
+                                                type="tel"
+                                                placeholder="Phone"
+                                                name="phone"
+                                                value={editAddress.phone}
+                                                onChange={editAddressEvent}
+                                                className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm outline-none transition focus:border-cyan-400"
+                                            />
+                                        </div>
+
+                                        <label className="flex items-center gap-2 pt-1 text-xs text-gray-600">
                                             <input
                                                 type="checkbox"
-                                                className="h-4 w-4 accent-cyan-500"
+                                                className="h-3.5 w-3.5 accent-cyan-500"
                                             />
                                             Make this default address
                                         </label>
                                     </div>
+
 
                                     <AlertDialogFooter>
                                         <AlertDialogCancel>
@@ -343,6 +409,7 @@ const Profile = () => {
 
 
             </div>
+
         </section>
     );
 };

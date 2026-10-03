@@ -1,6 +1,6 @@
 import axios from 'axios'
 import orderModel from '../models/order.model.js';
-import  broker from '../broker/broker.js'
+import broker from '../broker/broker.js'
 
 
 const createOrder = async (req, res) => {
@@ -53,7 +53,7 @@ const createOrder = async (req, res) => {
 
             return {
                 product: item.productId,
-                
+
                 title: product.title,
                 images: product.images[0]?.url,
                 size: item.size,
@@ -78,10 +78,10 @@ const createOrder = async (req, res) => {
             shippingAddress: req.body.shippingAddress
         })
 
-        await broker.publishToQueue("ORDER_SELLER_DASHBOARD.ORDER_CREATED",order)
+        await broker.publishToQueue("ORDER_SELLER_DASHBOARD.ORDER_CREATED", order)
 
         return res.status(201).json({
-            message: "Order done successfully",
+            message: "Order placed successfully!",
             order,
             success: true
         });
@@ -96,6 +96,36 @@ const createOrder = async (req, res) => {
     }
 };
 
+const updatePayment = async (req, res) => {
+    try {
+        const {orderId} = req.params;
+
+        const order = await orderModel.findByIdAndUpdate(orderId,
+            {
+                "payment.isPaid": true,
+                "payment.paidAt": new Date()
+            },
+            { returnDocument: 'after' }
+        );
+
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: "Order not found"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Payment marked as paid",
+            order
+        });
+
+    } catch (error) {
+        console.error("🚀 ~ updatePayment ~ error:", error)
+    }
+}
+
 const getMyOrder = async (req, res) => {
     try {
 
@@ -106,7 +136,7 @@ const getMyOrder = async (req, res) => {
         res.status(200).json({
             orders,
             totalOrder: orders.length,
-            success:true
+            success: true
         })
 
 
@@ -183,7 +213,7 @@ const cancelOrderById = async (req, res) => {
         order.status = "CANCELLED"
         await order.save()
 
-        res.status(200).json({ message:"Order Cancelled",order })
+        res.status(200).json({ message: "Order Cancelled", order })
 
     } catch (error) {
         console.error("🚀 ~ cancelOrderById ~ error:", error)
@@ -200,7 +230,7 @@ const updateOrderAddress = async (req, res) => {
         const user = req.user
         const orderId = req.params.id
 
-         const order = await orderModel.findById(orderId)
+        const order = await orderModel.findById(orderId)
 
         if (!order) {
             return res.status(404).json({
@@ -223,7 +253,7 @@ const updateOrderAddress = async (req, res) => {
 
         await order.save()
 
-         res.status(200).json({ message:"Address updated",success:true,order })
+        res.status(200).json({ message: "Address updated", success: true, order })
 
     }
     catch (error) {
@@ -238,6 +268,7 @@ const updateOrderAddress = async (req, res) => {
 
 export default {
     createOrder,
+    updatePayment,
     getMyOrder,
     getOrderById,
     cancelOrderById,

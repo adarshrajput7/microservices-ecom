@@ -3,15 +3,21 @@ import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { setLoading, setUser } from "../redux/authSlice";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { setTriggerRefresh } from "@/redux/orderSlice";
+import toast from "react-hot-toast";
 
 export default function Login() {
 
     const dispatch = useDispatch()
-    const { loading } = useSelector(store => store.auth)
+    const { user, loading } = useSelector(store => store.auth)
     const navigate = useNavigate()
+
+
+
+
 
 
     const [form, setForm] = useState({
@@ -33,10 +39,11 @@ export default function Login() {
 
         try {
             dispatch(setLoading(true))
-            const res = await axios.post(`http://localhost:3000/api/auth/login`, {
+            const res = await axios.post('http://localhost:3000/api/auth/login', {
                 usernameOrEmail: form.usernameOrEmail,
                 password: form.password
             },
+
                 {
                     headers: {
                         'Content-Type': 'application/json'
@@ -45,6 +52,7 @@ export default function Login() {
 
             if (res.data.success) {
                 dispatch(setUser(res.data.user))
+                dispatch(setTriggerRefresh())
                 toast.success(res.data.message)
                 setForm({
                     usernameOrEmail: "",
@@ -70,9 +78,13 @@ export default function Login() {
         // Firebase / Google OAuth yahan connect karein
     };
 
+    if (user) {
+        return <Navigate to="/" replace />;
+    }
+
     return (
         <>
-            <div className="min-h-screen flex items-center justify-center px-0 px-4 ">
+            <div className="min-h-screen flex items-center justify-center lg:px-0 px-3 bg-black/10">
                 {/* //   <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center px-4"> */}
                 <div className="w-full max-w-md">
 

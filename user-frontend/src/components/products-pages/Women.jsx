@@ -47,7 +47,7 @@ const Women = ({ filters }) => {
 
                 setProducts(res.data.data);                          // ✅ products
                 setTotalPages(res.data.pagination.totalPages);       // ✅ FIX — pagination object se
-                
+
             } catch (err) {
                 console.error("🚀 ~ getProducts ~ error:", err);
                 setError(err.message);
@@ -61,13 +61,31 @@ const Women = ({ filters }) => {
     const handlePrev = () => setPage((p) => Math.max(p - 1, 1));
     const handleNext = () => setPage((p) => Math.min(p + 1, totalPages));
 
-    if (loading) return <p className="p-5">Loading...</p>;
+    // if (loading) return <p className="p-5">Loading...</p>;
+    if (loading) {
+            return (
+                <div className="flex-1 p-3">
+                    <div className="grid md:grid-cols-3 grid-cols-2 lg:gap-4 gap-2 lg:mt-20">
+                        {Array.from({ length: LIMIT }).map((_, index) => (
+                            <ProductCard key={index} item={null} />
+                        ))}
+                    </div>
+                </div>
+            );
+        }
     if (error) return <p className="p-5 text-red-500">Error: {error}</p>;
 
     return (
-      <div className="flex-1 p-1 mt-20">
-            <h1 className="text-4xl pb-1 font-sans">Women Collections <span className="text-xl text-gray-500">{products.length} Products</span></h1>
-            <div className="grid grid-cols-3 gap-4">
+        <div className="flex-1 p-3 lg:mt-20">
+            
+            <h1 className="text-xl sm:text-2xl lg:text-4xl pb-1 font-sans">
+                Women Collections{" "}
+                <span className="text-sm sm:text-base lg:text-xl text-gray-500">
+                    {products.length} Products
+                </span>
+                    <img src="https://plus.unsplash.com/premium_photo-1670282393321-b34c6a4695b0?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" className="aspect-5/1.5 object-cover "/>
+            </h1>
+            <div className="grid md:grid-cols-3 grid-cols-2 lg:gap-4 gap-2 lg:mt-5">
                 {products.length === 0 ? (
                     <p>No products found</p>
                 ) : (

@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { Heart, CheckCircle2, CircleX, ChevronRight } from 'lucide-react';
 
 // Swiper React components और styles
@@ -10,18 +10,24 @@ import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import FeaturedSwiper from '../FeaturedSwiper';
+// import { toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
+import { setTriggerRefresh } from '@/redux/orderSlice';
+import toast from 'react-hot-toast';
 
 const ProductsView = () => {
     const params = useParams();
     const id = params?.id;
 
     const [product, setProduct] = useState(null);
-    const [selectedSize, setSelectedSize] = useState('UK 6');
+    const [selectedSize, setSelectedSize] = useState();
     const [selectedImage, setSelectedImage] = useState(0);
+    const { user } = useSelector((store) => store.auth)
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     // const sizes = ['UK 6', 'UK 7', 'UK 8', 'UK 9', 'UK 10', 'UK 11', 'UK 12'];
-    const sizes = product?.category === "FOOTWEAR" ? ['UK 6', 'UK 7', 'UK 8', 'UK 9', 'UK 10', 'UK 11', 'UK 12'] : product?.category === "CLOTHING" ? ['S', 'M', 'L'] : [];
-
+    const sizes = product?.category === "FOOTWEAR" ? ['UK 6', 'UK 7', 'UK 8', 'UK 9', 'UK 10', 'UK 11', 'UK 12'] : product?.category === "CLOTHING" ? ['S', 'M', 'L'] :  product?.category === "ACTIVE_LIFESTYLE" ? ['S', 'M', 'L'] : [];
 
 
 
@@ -46,6 +52,44 @@ const ProductsView = () => {
             getProductById();
         }
     }, [id]);
+
+
+    const addToCart = async () => {
+        if (!user) {
+            toast.error('Please login first');
+            navigate('/login');
+            return;
+        }
+
+        if (!selectedSize) {
+            toast.error("Please select the size")
+            return;
+        }
+        try {
+
+            const res = await axios.post(`http://localhost:3002/api/cart/items`, {
+                "productId": id,
+                "qty": 1,
+                "size": selectedSize
+            }, {
+                headers: {
+                    "Content-Type": "application/json"
+                }, withCredentials: true
+            })
+
+            if (res.data.success) {
+                dispatch(setTriggerRefresh())
+                toast.success('Add To Catt')
+                navigate('/cart')
+            }
+            console.log(res);
+
+
+        } catch (error) {
+            console.error("🚀 ~ addToCart ~ error:", error)
+        }
+    }
+
 
     const images = product?.images?.length >= 5
         ? product.images.map(img => img?.url || img)
@@ -219,7 +263,7 @@ const ProductsView = () => {
                     </div>
 
                     {/* Add to Bag CTA */}
-                    <button className="w-full mt-5 bg-[#00f2fe] hover:bg-[#00d8e4] text-black font-semibold py-3.5 px-6 rounded-full shadow-sm hover:shadow transition duration-200 active:scale-[0.99]">
+                    <button onClick={addToCart} className="w-full mt-5 bg-[#00f2fe] hover:bg-[#00d8e4] text-black font-semibold py-3.5 px-6 rounded-full shadow-sm hover:shadow transition duration-200 active:scale-[0.99]">
                         Add to Bag
                     </button>
 

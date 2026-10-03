@@ -7,8 +7,16 @@ const routes = express.Router();
 
 // POST auth register
 routes.post('/register', validators.registerUserValidations, authController.registerUser);
-//Login 
-routes.post('/login', validators.loginUserValidations, authController.loginUser);
+//Login
+// routes.post('/login', validators.loginUserValidations, authController.loginUser);
+
+//User login
+routes.post('/login',validators.loginUserValidations,
+    (req, res) => authController.loginUser(req, res, 'user'));
+//seller login ke liye
+routes.post('/seller/login',validators.loginUserValidations,
+    (req, res) => authController.loginUser(req, res, 'seller'));
+
 //Get logged in user data
 routes.get('/me',authMiddleware.authMiddleware,authController.getCurrentUser);
 //logout

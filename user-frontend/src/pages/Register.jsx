@@ -3,15 +3,16 @@ import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { setLoading, setUser } from "../redux/authSlice";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function Register() {
     const [form, setForm] = useState({ username: "", firstName: "", lastName: "", email: "", password: "" });
     const [showPassword, setShowPassword] = useState(false);
     const dispatch = useDispatch()
-    const { loading } = useSelector(store => store.auth)
+    const {user, loading } = useSelector(store => store.auth)
     const navigate = useNavigate()
 
     const handleChange = (e) => {
@@ -64,8 +65,12 @@ export default function Register() {
         console.log("Google Auth clicked");
     };
 
+    if (user) {
+        return <Navigate to="/" replace />;
+    }
+
     return (
-        <div className="h-[90vh] flex items-center justify-center bg-gray-50 px-4 mt-20">
+        <div className="h-[90vh] flex items-center justify-center bg-gray-50 px-4 mt-20 bg-black/10">
             <div className="w-full max-w-md">
                 <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-4 sm:p-6">
                     <div className="text-center mb-4">

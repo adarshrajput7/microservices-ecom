@@ -20,11 +20,10 @@ const connect = async () => {
     if (connection && channel) {
         return connection
     }
-    console.log(process.env.RABBIT_URL)
+    // console.log(process.env.RABBIT_URL)
 
     try {
-        // connection = await amqplib.connect(process.env.RABBIT_URL)
-        connection = await amqplib.connect('amqps://bwpnlzeg:eoX7_E7x3fGJ1sMRnKvDi1PtcqUYmi2Q@frog.lmq.cloudamqp.com/bwpnlzeg')
+        connection = await amqplib.connect(process.env.RABBIT_URL)
 
         console.log('Connected to RabbitMQ')
 

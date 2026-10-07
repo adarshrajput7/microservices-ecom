@@ -1,11 +1,15 @@
 import mongoose from "mongoose";
 
-
+let dbConnection = null;
 const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.ORDER_MONGO_URI)
-        // await mongoose.connect(process.env.MONGO_URI)
-        console.log('Order MongoDB connected');
+        if (!dbConnection) {
+            dbConnection = mongoose.createConnection(process.env.ORDER_MONGO_URI || process.env.MONGO_URI);
+            await dbConnection.asPromise();
+            console.log('Order MongoDB connected');
+        }
+        return dbConnection;
+        
     } catch (error) {
         console.error("🚀 ~ connectDB ~ error:", error)
     }

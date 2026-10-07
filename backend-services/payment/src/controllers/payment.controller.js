@@ -20,7 +20,7 @@ const createPayment = async (req, res) => {
         const orderId = req.params.orderId;
 
         // 1. Order Service se Order Data fetch
-        const orderResponse = await axios.get(`http://localhost:5000/api/order/${orderId}`, {
+        const orderResponse = await axios.get(`loyal-education-production-8696.up.railway.app/api/order/${orderId}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

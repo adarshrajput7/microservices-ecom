@@ -6,7 +6,7 @@ const connectDB = async () => {
         if (!dbConnection) {
             dbConnection = mongoose.createConnection(process.env.ORDER_MONGO_URI || process.env.MONGO_URI);
             await dbConnection.asPromise();
-            console.log("MongoDB connected");
+            console.log("Products MongoDB connected");
         }
         return dbConnection;
         

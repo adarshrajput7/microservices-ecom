@@ -78,6 +78,8 @@ import connectProductDB from './backend-services/product/src/db/db.js';
 import connectSellerDB from './backend-services/seller-dashboard/src/db/db.js';
 // import connect from './backend-services/notification/src/broker/broker.js';
 // import listener from './backend-services/notification/src/broker/listners.js';
+import mongoose from 'mongoose';
+mongoose.set('overwriteModels', true);
 
 
 // --- 2. Initialize Database Connections ---

@@ -17,7 +17,7 @@ const createOrder = async (req, res) => {
 
         //cart service se all cart get kar rhe jo user ne cart me add kar rakha hai 
         const cartResponse = await axios.get(
-            "loyal-education-production-8696.up.railway.app/api/cart/",
+            "loyal-education-production-fec0.up.railway.app/api/cart/",
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -27,7 +27,7 @@ const createOrder = async (req, res) => {
 
         //product service se all cart me add product fetched kar rahe hai
         const products = await Promise.all(cartResponse.data.cart.items.map(async (item) => {
-            return (await axios.get(`loyal-education-production-8696.up.railway.app/api/product/${item.productId}`, {
+            return (await axios.get(`loyal-education-production-fec0.up.railway.app/api/product/${item.productId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

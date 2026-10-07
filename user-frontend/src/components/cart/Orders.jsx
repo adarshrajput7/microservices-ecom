@@ -39,7 +39,7 @@
 
 //     try {
 //       const { data } = await axios.post(
-//         `http://localhost:3004/api/payments/create/${orderId}`,
+//         `http://localhost:5000/api/payments/create/${orderId}`,
 //         {},
 //         { withCredentials: true }
 //       );
@@ -63,7 +63,7 @@
 //         handler: async (response) => {
 //           try {
 //             const verifyRes = await axios.post(
-//               "http://localhost:3004/api/payments/verify",
+//               "http://localhost:5000/api/payments/verify",
 //               {
 //                 razorpay_order_id: response.razorpay_order_id,
 //                 razorpay_payment_id: response.razorpay_payment_id,
@@ -120,7 +120,7 @@
 
 //   const getOrder = async () => {
 //     try {
-//       const res = await axios.get("http://localhost:3003/api/order/me", { withCredentials: true });
+//       const res = await axios.get("http://localhost:5000/api/order/me", { withCredentials: true });
 //       if (res.data?.success) dispatch(setOrderRedux(res.data));
 //     } catch (error) {
 //       console.error("Fetch order error:", error);
@@ -290,7 +290,7 @@ const Order = () => {
   // Backend se user ke saare orders fetch karna
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("http://localhost:3003/api/order/me", {
+      const res = await axios.get("http://localhost:5000/api/order/me", {
         withCredentials: true,
       });
       if (res.data?.success) {
@@ -362,7 +362,7 @@ const Order = () => {
     try {
       // 2. Backend se Razorpay order ID create karwana
       const { data } = await axios.post(
-        `http://localhost:3004/api/payments/create/${selectedOrder._id}`,
+        `http://localhost:5000/api/payments/create/${selectedOrder._id}`,
         {},
         { withCredentials: true }
       );
@@ -388,7 +388,7 @@ const Order = () => {
         handler: async (response) => {
           try {
             const verifyRes = await axios.post(
-              "http://localhost:3004/api/payments/verify",
+              "http://localhost:5000/api/payments/verify",
               {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
@@ -399,7 +399,7 @@ const Order = () => {
             );
 
             if (verifyRes.data?.success) {
-              await axios.patch(`http://localhost:3003/api/order/pay/${selectedOrder._id}`,{}, {
+              await axios.patch(`http://localhost:5000/api/order/pay/${selectedOrder._id}`,{}, {
                 withCredentials:true
               })
               alert("Payment safal ho gaya!");

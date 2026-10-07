@@ -15,7 +15,7 @@ export const CartProvider = ({ children }) => {
 
             // 1. Cart data fetch
             const cartRes = await axios.get(
-                "http://localhost:3002/api/cart/",
+                "http://localhost:5000/api/cart/",
                 { withCredentials: true }
             );
 
@@ -25,7 +25,7 @@ export const CartProvider = ({ children }) => {
             const products = await Promise.all(
                 items.map(async (item) => {
                     const res = await axios.get(
-                        `http://localhost:3001/api/product/${item.productId}`,
+                        `http://localhost:5000/api/product/${item.productId}`,
                         { withCredentials: true }
                     );
 

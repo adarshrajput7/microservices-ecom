@@ -44,7 +44,7 @@ const Navbar = ({ transparent }) => {
   useEffect(() => {
     const getCartProducts = async () => {
       try {
-        const cartRes = await axios.get("http://localhost:3002/api/cart/", { withCredentials: true });
+        const cartRes = await axios.get("http://localhost:5000/api/cart/", { withCredentials: true });
         const items = cartRes.data.cart.items;
         // console.log("💗 Cart Items:", items);
 
@@ -53,7 +53,7 @@ const Navbar = ({ transparent }) => {
 
         const productResponses = await Promise.all(
           productIds.map((productId) =>
-            axios.get(`http://localhost:3001/api/product/${productId}`, { withCredentials: true })
+            axios.get(`http://localhost:5000/api/product/${productId}`, { withCredentials: true })
           )
         );
 

@@ -25,7 +25,7 @@ const AuthCheck = () => {
                 // Browser automatically token wali
                 // HttpOnly cookie backend ko bhej dega
                 const response = await axios.get(
-                    "http://localhost:3000/api/auth/me",
+                    "http://localhost:5000/api/auth/me",
                     {
                         // Cookie ko request ke saath bhejna zaroori hai
                         withCredentials: true,

@@ -14,12 +14,6 @@ export default function Login() {
     const dispatch = useDispatch()
     const { user, loading } = useSelector(store => store.auth)
     const navigate = useNavigate()
-
-
-
-
-
-
     const [form, setForm] = useState({
         usernameOrEmail: "",
         password: "",
@@ -39,7 +33,7 @@ export default function Login() {
 
         try {
             dispatch(setLoading(true))
-            const res = await axios.post('http://localhost:3000/api/auth/login', {
+            const res = await axios.post('http://localhost:5000/api/auth/login', {
                 usernameOrEmail: form.usernameOrEmail,
                 password: form.password
             },
@@ -62,13 +56,25 @@ export default function Login() {
                 console.log(res)
             }
 
+            // } catch (error) {
+            //     console.log("login handler error:", error);
+            //     if (error.response?.status) {
+            //         toast.error(error.response.data.message);
+            //     } else {
+            //         toast.error(error.response?.data?.message || 'Login Failed!');
+            //     }
         } catch (error) {
             console.log("login handler error:", error);
-            if (error.response?.status) {
-                toast.error(error.response.data.message);
-            } else {
-                toast.error(error.response?.data?.message || 'Registration failed!');
-            }
+            console.log("Response data:", error.response?.data);   // ← ye add karo
+
+            const msg =
+                error.response?.data?.message ||
+                error.response?.data?.error ||
+                error.response?.data?.msg ||
+                error.response?.data?.errors?.[0]?.msg ||
+                'Login Failed!';
+
+            toast.error(msg);
         } finally { dispatch(setLoading(false)) }
 
     };

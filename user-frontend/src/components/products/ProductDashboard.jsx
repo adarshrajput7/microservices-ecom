@@ -68,7 +68,7 @@ const ProductDashboard = ({ propsInput }) => {
         
         
         const res = await axios.get(
-          "http://localhost:3001/api/product/",
+          "http://localhost:5000/api/product/",
           {
             params,
             withCredentials: true,

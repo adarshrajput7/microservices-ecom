@@ -1,13 +1,13 @@
 import { Heart, X } from "lucide-react";
 import { useState } from "react";
 import { IoBagAddOutline } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { createPortal } from "react-dom";
 import axios from "axios";
 // import { toast } from "react-toastify";
 import { setTriggerRefresh } from "@/redux/orderSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Skeleton } from "../ui/skeleton";
 import toast from "react-hot-toast";
 
@@ -74,7 +74,8 @@ const ProductCard = ({ item }) => {
   const image = item.images?.[4]?.thumbnail || item.images?.[0]?.url;
   const price = item.price?.amount || item.price;
   const dispatch = useDispatch()
-
+  const { user } = useSelector((store) => store.auth)
+  console.log(user)
   const goToProduct = () => navigate(`/view/${item._id}`);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -92,13 +93,19 @@ const ProductCard = ({ item }) => {
   };
 
   const addToCart = async (id) => {
+    if (!user) {
+        toast.error("Please login to add items to cart");
+        navigate("/login");          // ✅ ye sahi hai
+        return;
+    }
+
     if (!selectedSize) {
       toast.error("Please select the size")
       return;
     }
     try {
 
-      const res = await axios.post(`http://localhost:3002/api/cart/items`, {
+      const res = await axios.post(`http://localhost:5000/api/cart/items`, {
         "productId": id,
         "qty": 1,
         "size": selectedSize
@@ -171,27 +178,6 @@ const ProductCard = ({ item }) => {
             </p>
 
             {/* Add to Bag */}
-            {/* <button
-              type="button"
-              aria-label="Add to bag"
-              onClick={handleAddToBag}
-              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-white text-gray-700 transition-all duration-200 hover:bg-gray-900 hover:text-white sm:h-9 sm:w-9"
-            >
-              <IoBagAddOutline className="h-3.5 w-3.5 sm:h-4.5 sm:w-4.5" />
-            </button> */}
-
-            {/* <button
-              type="button"
-              aria-label="Add to bag"
-              onClick={handleAddToBag}
-              className="flex h-10 py-5 shrink-0 items-center justify-center gap-1 rounded-md border border-gray-300 bg-white px-1.5 text-gray-700 transition-all duration-500 ease-in-out hover:bg-gray-900 hover:text-white sm:h-9 sm:px-2 md:hover:px-3"
-            >
-              <IoBagAddOutline  className="h-8 w-8 shrink-0 " />
-              <span className="hidden max-w-0 overflow-hidden whitespace-nowrap text-sm font-medium opacity-0 transition-all duration-500 ease-in-out group-hover:max-w-20 group-hover:opacity-100 md:inline-block">
-                Add to Cart
-              </span>
-            </button> */}
-
 
             <button
               type="button"
@@ -281,7 +267,7 @@ const ProductCard = ({ item }) => {
               </div>
 
               {/* CTA Button */}
-              <button onClick={() => addToCart(item._id)} className="w-full mt-2 py-2 lg:py-2.5 bg-[#00FFFF] hover:bg-[#00e6e6] text-black  rounded-full lg:text-sm text-sm transition">Add to Bag</button>  
+              <button onClick={() => addToCart(item._id)} className="w-full mt-2 py-2 lg:py-2.5 bg-[#00FFFF] hover:bg-[#00e6e6] text-black  rounded-full lg:text-sm text-sm transition">Add to Bag</button>
             </div>
           </div>
         </div>,

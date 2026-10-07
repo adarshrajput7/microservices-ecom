@@ -34,7 +34,7 @@ const ProductsView = () => {
     useEffect(() => {
         const getProductById = async () => {
             try {
-                const res = await axios.get(`http://localhost:3001/api/product/${id}`, {
+                const res = await axios.get(`http://localhost:5000/api/product/${id}`, {
                     withCredentials: true
                 });
                 if (res.data.success) {
@@ -67,7 +67,7 @@ const ProductsView = () => {
         }
         try {
 
-            const res = await axios.post(`http://localhost:3002/api/cart/items`, {
+            const res = await axios.post(`http://localhost:5000/api/cart/items`, {
                 "productId": id,
                 "qty": 1,
                 "size": selectedSize
@@ -128,8 +128,17 @@ const ProductsView = () => {
                         </Swiper>
                     </div> */}
 
+                    
+
                     {/* MOBILE VIEW: Swiper Carousel */}
                     <div className="block md:hidden w-full mt-4">
+                        {/* <div className="flex items-center text-xs space-x-1.5 px-2">
+                            <span className="hover:underline cursor-pointer">Home</span>
+                            <span><ChevronRight size={15} /></span>
+                            <span className="text-gray-900 font-medium truncate max-w-[70vw] ">
+                                {product?.title || "Boom Rush"}
+                            </span>
+                        </div> */}
                         <Swiper
                             modules={[Pagination]}
                             pagination={{ clickable: true }}
@@ -155,6 +164,7 @@ const ProductsView = () => {
 
                     {/* 2. DESKTOP / TABLET VIEW: Main Image + 4 Thumbnails (md screens aur upar) */}
                     <div className="hidden md:flex flex-col gap-4">
+
                         <div className="relative w-full h-112 lg:h-125 bg-[#f8f8f8] rounded-xl flex items-center justify-center p-0 overflow-hidden">
                             <img
                                 src={images[selectedImage]}
@@ -187,7 +197,7 @@ const ProductsView = () => {
                 <div className="lg:col-span-5 flex flex-col pt-1 px-4">
                     {/* Breadcrumbs & Wishlist */}
                     <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
-                        <div className="flex items-center space-x-1.5">
+                        <div className="flex items-center space-x-1.5 ">
                             <span className="hover:underline cursor-pointer">Home</span>
                             <span><ChevronRight size={15} /></span>
                             <span className="text-gray-900 font-medium truncate max-w-50">

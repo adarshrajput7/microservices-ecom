@@ -43,7 +43,7 @@ const Footwear = ({ filters }) => {
                 params.set("page", page);
                 params.set("limit", LIMIT);
 
-                const res = await axios.get(`http://localhost:3001/api/product/?${params}`);
+                const res = await axios.get(`http://localhost:5000/api/product/?${params}`);
 
                 setProducts(res.data.data);                          // ✅ products
                 setTotalPages(res.data.pagination.totalPages);       // ✅ FIX — pagination object se

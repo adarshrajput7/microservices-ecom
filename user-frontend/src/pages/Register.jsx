@@ -24,7 +24,7 @@ export default function Register() {
         console.log("Register Data:", form);
         try {
             dispatch(setLoading(true))
-            const res = await axios.post(`http://localhost:3000/api/auth/register`, {
+            const res = await axios.post(`http://localhost:5000/api/auth/register`, {
                 username: form.username,
                 email: form.email,
                 password: form.password,
@@ -62,7 +62,7 @@ export default function Register() {
     };
 
     const handleGoogleAuth = () => {
-        console.log("Google Auth clicked");
+        toast.error("Limits Reached")
     };
 
     if (user) {
@@ -70,22 +70,22 @@ export default function Register() {
     }
 
     return (
-        <div className="h-[90vh] flex items-center justify-center bg-gray-50 px-4 mt-20 bg-black/10">
+        <div className="h-screen pb-5 flex items-center justify-center  px-4 mt-20 bg-black/10">
             <div className="w-full max-w-md">
-                <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-4 sm:p-6">
+                <div className="bg-white rounded-2xl shadow-xl  border border-slate-200 p-4 sm:p-6">
                     <div className="text-center mb-4">
                         <h1 className="text-xl font-bold text-slate-900">Create Account</h1>
                     </div>
 
-                    <button type="button" onClick={handleGoogleAuth} className="w-full flex items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
+                    <button type="button" onClick={handleGoogleAuth} className="w-full flex items-center justify-center gap-3 rounded-lg border border-slate-400 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
                         <FcGoogle size={20} />
                         Continue with Google
                     </button>
 
-                    <div className="flex items-center gap-3 my-3">
-                        <div className="h-px flex-1 bg-slate-200" />
+                    <div className="flex items-center gap-3 my-1">
+                        <div className="h-px flex-1 bg-slate-300" />
                         <span className="text-xs text-slate-400">OR</span>
-                        <div className="h-px flex-1 bg-slate-200" />
+                        <div className="h-px flex-1 bg-slate-300" />
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-3">
@@ -122,8 +122,8 @@ export default function Register() {
                         </div>
 
                         <label className="flex items-start gap-2 text-sm text-slate-500">
-                            <input type="checkbox" required className="mt-0.5 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
-                            <span>I agree to the <a href="/terms" className="text-blue-600 hover:underline">Terms & Conditions</a></span>
+                            <input type="checkbox" required className="mt-0.5 h-4 w-4 rounded border-slate-300 accent-[#00FFFF]  focus:ring-blue-500" />
+                            <span>I agree to the <a href="" className="text-blue-600 hover:underline">Terms & Conditions</a></span>
                         </label>
 
                         <button type="submit" className="w-full rounded-lg px-4 py-2.5 text-sm font-semibold bg-[#00FFFF] text-[#666666] hover:bg-[#00e6e6] transition flex items-center justify-center">

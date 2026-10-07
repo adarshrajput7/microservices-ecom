@@ -13,7 +13,7 @@
 //             try {
 //                 const params = new URLSearchParams();
 //                 params.set("limit", LIMIT);
-//                 const res = await axios.get(`http://localhost:3001/api/product/?${params}`)
+//                 const res = await axios.get(`http://localhost:5000/api/product/?${params}`)
 //                 console.log(res.data);
 //                 setProducts(res.data.data)
 
@@ -60,7 +60,7 @@
 //     useEffect(() => {
 //         (async () => {
 //             const res = await axios.get(
-//                 `http://localhost:3001/api/product/?limit=${LIMIT}`
+//                 `http://localhost:5000/api/product/?limit=${LIMIT}`
 //             );
 //             setProducts(res.data.data);
 //         })().catch(console.error);
@@ -110,6 +110,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 // import { Navigation, FreeMode } from "swiper/modules";
 import { FreeMode } from "swiper/modules"; 
 import { Infinity as InfinityIcon } from "lucide-react"; // Lucide Icon
+import { BiExpandHorizontal } from "react-icons/bi";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -125,7 +126,7 @@ const FeaturedSwiper = ({ headingTitle }) => {
     const swiperRef = useRef(null);
 
     useEffect(() => {
-        axios.get(`http://localhost:3001/api/product/?limit=${LIMIT}`)
+        axios.get(`http://localhost:5000/api/product/?limit=${LIMIT}`)
             .then((res) => setProducts(res.data.data))
             .catch(console.error);
     }, []);
@@ -217,10 +218,11 @@ const FeaturedSwiper = ({ headingTitle }) => {
 
                     {/* Lucide Icon Drag Button */}
                     <div
-                        className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 bg-white text-black p-0.5 rounded-full border border-black shadow-xs cursor-grab active:cursor-grabbing flex items-center justify-center"
+                        className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 bg-white text-black p-0.3 rounded-full border border-black shadow-xs cursor-grab active:cursor-grabbing flex items-center justify-center"
                         style={{ left: `${progress * 100}%` }}
                     >
-                        <InfinityIcon size={14} strokeWidth={2.2} />
+                        {/* <InfinityIcon size={14} strokeWidth={2.2} /> */}
+                        <BiExpandHorizontal />
                     </div>
                 </div>
             </div>

@@ -43,7 +43,7 @@ const ActiveLifestyle = ({ filters }) => {
                 params.set("page", page);
                 params.set("limit", LIMIT);
 
-                const res = await axios.get(`http://localhost:3001/api/product/?${params}`);
+                const res = await axios.get(`http://localhost:5000/api/product/?${params}`);
 
                 setProducts(res.data.data);                          // ✅ products
                 setTotalPages(res.data.pagination.totalPages);       // ✅ FIX — pagination object se
@@ -76,9 +76,12 @@ const ActiveLifestyle = ({ filters }) => {
     if (error) return <p className="p-5 text-red-500">Error: {error}</p>;
 
     return (
-      <div className="flex-1 p-1 mt-20">
-            <h1 className="text-4xl pb-1 font-sans">Active Lifestyle - All <span className="text-xl text-gray-500">{products.length} Products</span></h1>
-            <div className="grid grid-cols-3 gap-4">
+      <div className="flex-1 p-1 lg:mt-20">
+            <h1 className="text-xl sm:text-2xl lg:text-4xl pb-1 font-sans">Active Lifestyle - All
+                <span className="text-sm sm:text-base lg:text-xl text-gray-500 ml-2">{products.length} Products</span>
+                <img src="https://i.pinimg.com/736x/4a/49/49/4a49490875f745cfe6d69e4d14e3d0a6.jpg" alt="" className="aspect-5/1.5 object-cover "/>
+            </h1>
+            <div className="grid md:grid-cols-3 grid-cols-2 lg:gap-4 gap-2 lg:mt-5 ">
                 {products.length === 0 ? (
                     <p>No products found</p>
                 ) : (

@@ -34,7 +34,7 @@ const Cart = () => {
     const createOrder = async () => {
         try {
 
-            const res = await axios.post(`http://localhost:3003/api/order`, {
+            const res = await axios.post(`http://localhost:5000/api/order`, {
                 "shippingAddress": {
                     "street": user.addresses[0].street,
                     "city": user.addresses[0].city,
@@ -51,7 +51,7 @@ const Cart = () => {
 
             if (res.data.success) {
 
-                const deleteCart = await axios.delete(`http://localhost:3002/api/cart/`, {
+                const deleteCart = await axios.delete(`http://localhost:5000/api/cart/`, {
                     withCredentials: true
                 })
                 console.log("🟩", deleteCart)
@@ -68,7 +68,7 @@ const Cart = () => {
 
     const removeProduct = async (id) => {
         try {
-            const res = await axios.delete(`http://localhost:3002/api/cart/delete/${id}`, {
+            const res = await axios.delete(`http://localhost:5000/api/cart/delete/${id}`, {
                 withCredentials: true
             })
 
@@ -85,27 +85,6 @@ const Cart = () => {
         }
     }
 
-    // const updateCartQty = async (id) => {
-    //     console.log("iddddddddddd", id)
-    //     if (!id) {
-    //         console.error("Cart Item ID missing!");
-    //         toast.error(id)
-    //         return;
-    //     }
-    //     try {
-    //         const res = await axios.patch(`http://localhost:3002/api/cart/items/${id}`, { "qty": qty },
-    //             {
-    //                 withCredentials: true
-    //             })
-    //         if (res.data.success) {
-    //             toast.success(res.data.message)
-    //             dispatch(setTriggerRefresh())
-    //         }
-    //     } catch (error) {
-    //         console.error("🚀 ~ updateCartQty ~ error:", error)
-    //     }
-    // }
-
     const updateCartQty = async (productId, newQty) => {
         if (newQty > 5) {
             toast.error("Maximum quantity is 5");
@@ -115,7 +94,7 @@ const Cart = () => {
 
         try {
             const res = await axios.patch(
-                `http://localhost:3002/api/cart/items/${productId}`,
+                `http://localhost:5000/api/cart/items/${productId}`,
                 {
                     qty: newQty
                 },

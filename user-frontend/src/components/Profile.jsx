@@ -31,7 +31,7 @@ const Profile = () => {
     const logoutHandler = async () => {
         try {
 
-            const res = await axios.get(`http://localhost:3000/api/auth/logout`, {
+            const res = await axios.get(`http://localhost:5000/api/auth/logout`, {
                 withCredentials: true
             })
 
@@ -50,7 +50,7 @@ const Profile = () => {
     const deleteAddressHandle = async (id) => {
         try {
 
-            const res = await axios.delete(`http://localhost:3000/api/auth/users/me/addresses/${id}`, {
+            const res = await axios.delete(`http://localhost:5000/api/auth/users/me/addresses/${id}`, {
                 withCredentials: true
             })
 
@@ -78,7 +78,7 @@ const Profile = () => {
     const addAddressHandler = async () => {
         try {
             setLoading(true)
-            const res = await axios.post(`http://localhost:3000/api/auth/users/me/addresses`, {
+            const res = await axios.post(`http://localhost:5000/api/auth/users/me/addresses`, {
                 "street": editAddress.street,
                 "city": editAddress.city,
                 "state": editAddress.state,

@@ -31,7 +31,7 @@ const Search = () => {
             params.set("page", "1");
             params.set("limit", "12");
 
-            const res = await fetch(`http://localhost:3001/api/product/?${params}`);
+            const res = await fetch(`http://localhost:5000/api/product/?${params}`);
             const result = await res.json();
 
             if (result.success) {

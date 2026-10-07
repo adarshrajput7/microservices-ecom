@@ -30,7 +30,7 @@
 //                 params.set('page',page)
 //                 params.set('limit',12)
 
-//                 const res = await axios.get(`http://localhost:3001/api/product/?${params}`)
+//                 const res = await axios.get(`http://localhost:5000/api/product/?${params}`)
 
 //                 console.log(res.data);
 //                 setProducts(res.data.data);
@@ -101,7 +101,7 @@
 //                 params.set("page", page);
 //                 params.set("limit", LIMIT);
 
-//                 const res = await axios.get(`http://localhost:3001/api/product/?${params}`);
+//                 const res = await axios.get(`http://localhost:5000/api/product/?${params}`);
 
 //                 setProducts(res.data.data);                          // ✅ products
 //                 setTotalPages(res.data.pagination.totalPages);       // ✅ FIX — pagination object se
@@ -197,7 +197,7 @@ const Collections = ({ filters }) => {
                 params.set("page", page);
                 params.set("limit", LIMIT);
 
-                const res = await axios.get(`http://localhost:3001/api/product/?${params}`);
+                const res = await axios.get(`http://localhost:5000/api/product/?${params}`);
                 setProducts(res.data.data);
                 setTotalPages(res.data.pagination.totalPages);
             } catch (err) {

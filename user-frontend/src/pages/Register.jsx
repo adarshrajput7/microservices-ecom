@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../api/axios";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
@@ -24,7 +24,7 @@ export default function Register() {
         console.log("Register Data:", form);
         try {
             dispatch(setLoading(true))
-            const res = await axios.post(`http://localhost:5000/api/auth/register`, {
+            const res = await axios.post(`/api/auth/register`, {
                 username: form.username,
                 email: form.email,
                 password: form.password,

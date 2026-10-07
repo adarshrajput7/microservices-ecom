@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../api/axios";
 import { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
 import { setFilter } from "@/redux/filterSlice";
@@ -43,7 +43,7 @@ const Mobiles = ({ filters }) => {
                 params.set("page", page);
                 params.set("limit", LIMIT);
 
-                const res = await axios.get(`http://localhost:5000/api/product/?${params}`);
+                const res = await axios.get(`/api/product/?${params}`);
 
                 setProducts(res.data.data);                          // ✅ products
                 setTotalPages(res.data.pagination.totalPages);       // ✅ FIX — pagination object se

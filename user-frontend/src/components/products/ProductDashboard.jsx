@@ -1,5 +1,5 @@
 
-import axios from "axios";
+import axios from "../../api/axios";
 import { useEffect, useState } from "react";
 import ProductCard from "../products-pages/ProductCard";
 import { useDispatch } from "react-redux";
@@ -68,7 +68,7 @@ const ProductDashboard = ({ propsInput }) => {
         
         
         const res = await axios.get(
-          "http://localhost:5000/api/product/",
+          "/api/product/",
           {
             params,
             withCredentials: true,

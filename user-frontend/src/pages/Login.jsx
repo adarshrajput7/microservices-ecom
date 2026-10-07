@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../api/axios";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
@@ -33,7 +33,7 @@ export default function Login() {
 
         try {
             dispatch(setLoading(true))
-            const res = await axios.post('http://localhost:5000/api/auth/login', {
+            const res = await axios.post('/api/auth/login', {
                 usernameOrEmail: form.usernameOrEmail,
                 password: form.password
             },

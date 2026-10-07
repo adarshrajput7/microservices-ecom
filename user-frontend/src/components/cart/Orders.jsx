@@ -270,7 +270,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../../api/axios";
 import { ArrowRight, CheckCircle2, LucideTruck, MapPin, Phone } from "lucide-react";
 import { setOrderRedux } from "@/redux/orderSlice";
 import { Button } from "../ui/button";
@@ -290,7 +290,7 @@ const Order = () => {
   // Backend se user ke saare orders fetch karna
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/order/me", {
+      const res = await axios.get("/api/order/me", {
         withCredentials: true,
       });
       if (res.data?.success) {
@@ -362,7 +362,7 @@ const Order = () => {
     try {
       // 2. Backend se Razorpay order ID create karwana
       const { data } = await axios.post(
-        `http://localhost:5000/api/payments/create/${selectedOrder._id}`,
+        `/api/payments/create/${selectedOrder._id}`,
         {},
         { withCredentials: true }
       );
@@ -388,7 +388,7 @@ const Order = () => {
         handler: async (response) => {
           try {
             const verifyRes = await axios.post(
-              "http://localhost:5000/api/payments/verify",
+              "/api/payments/verify",
               {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
@@ -399,7 +399,7 @@ const Order = () => {
             );
 
             if (verifyRes.data?.success) {
-              await axios.patch(`http://localhost:5000/api/order/pay/${selectedOrder._id}`,{}, {
+              await axios.patch(`/api/order/pay/${selectedOrder._id}`,{}, {
                 withCredentials:true
               })
               alert("Payment safal ho gaya!");

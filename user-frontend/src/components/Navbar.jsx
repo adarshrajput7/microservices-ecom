@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Search, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { IoIosArrowRoundForward } from "react-icons/io";
-import axios from "axios";
+import axios from "../api/axios";
 import { useCart } from "./cart/CartContext";
 import { setSearchOpen } from "@/redux/authSlice";
 
@@ -44,7 +44,7 @@ const Navbar = ({ transparent }) => {
   useEffect(() => {
     const getCartProducts = async () => {
       try {
-        const cartRes = await axios.get("http://localhost:5000/api/cart/", { withCredentials: true });
+        const cartRes = await axios.get("/api/cart/", { withCredentials: true });
         const items = cartRes.data.cart.items;
         // console.log("💗 Cart Items:", items);
 
@@ -53,7 +53,7 @@ const Navbar = ({ transparent }) => {
 
         const productResponses = await Promise.all(
           productIds.map((productId) =>
-            axios.get(`http://localhost:5000/api/product/${productId}`, { withCredentials: true })
+            axios.get(`/api/product/${productId}`, { withCredentials: true })
           )
         );
 

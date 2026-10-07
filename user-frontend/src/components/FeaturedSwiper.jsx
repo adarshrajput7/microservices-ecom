@@ -104,7 +104,7 @@
 
 
 
-import axios from "axios";
+import axios from "../api/axios";
 import { useEffect, useState, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 // import { Navigation, FreeMode } from "swiper/modules";
@@ -126,7 +126,7 @@ const FeaturedSwiper = ({ headingTitle }) => {
     const swiperRef = useRef(null);
 
     useEffect(() => {
-        axios.get(`http://localhost:5000/api/product/?limit=${LIMIT}`)
+        axios.get(`/api/product/?limit=${LIMIT}`)
             .then((res) => setProducts(res.data.data))
             .catch(console.error);
     }, []);

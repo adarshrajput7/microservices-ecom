@@ -40,7 +40,7 @@ export default function Products() {
                 params.set("page", page);
                 params.set("limit", 12);
 
-                const res = await fetch(`http://localhost:5000/api/product/?${params}`);
+                const res = await fetch(`/api/product/?${params}`);
                 const result = await res.json();
 
                 if (result.success) {

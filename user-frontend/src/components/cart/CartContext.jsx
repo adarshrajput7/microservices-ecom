@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
-import axios from "axios";
+import axios from "../../api/axios";
 import { useSelector } from "react-redux";
 
 const CartContext = createContext();
@@ -15,7 +15,7 @@ export const CartProvider = ({ children }) => {
 
             // 1. Cart data fetch
             const cartRes = await axios.get(
-                "http://localhost:5000/api/cart/",
+                "/api/cart/",
                 { withCredentials: true }
             );
 
@@ -25,7 +25,7 @@ export const CartProvider = ({ children }) => {
             const products = await Promise.all(
                 items.map(async (item) => {
                     const res = await axios.get(
-                        `http://localhost:5000/api/product/${item.productId}`,
+                        `/api/product/${item.productId}`,
                         { withCredentials: true }
                     );
 

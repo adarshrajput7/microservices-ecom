@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import axios from "axios";
+import axios from "./api/axios";
 
 import {
     setUser,
@@ -25,7 +25,7 @@ const AuthCheck = () => {
                 // Browser automatically token wali
                 // HttpOnly cookie backend ko bhej dega
                 const response = await axios.get(
-                    "http://localhost:5000/api/auth/me",
+                    "/api/auth/me",
                     {
                         // Cookie ko request ke saath bhejna zaroori hai
                         withCredentials: true,

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../api/axios";
 import { useEffect, useState } from "react";
 // import { setFilter } from "@/redux/filterSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -53,7 +53,7 @@ const SearchView = ({ filters }) => {
                 params.set("page", page);
                 params.set("limit", LIMIT);
 
-                const res = await axios.get(`http://localhost:5000/api/product/?${params}`);
+                const res = await axios.get(`/api/product/?${params}`);
                 setProducts(res.data.data);
                 setTotalPages(res.data.pagination.totalPages);
             } catch (err) {

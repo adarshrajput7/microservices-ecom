@@ -45,7 +45,7 @@ export default function ProductCatalog() {
             params.append('page', page.toString());
             params.append('limit', limit.toString());
 
-            const url = `http://localhost:5000/api/product/?${params.toString()}`;
+            const url = `/api/product/?${params.toString()}`;
 
 
 

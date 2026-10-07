@@ -3,7 +3,7 @@ import { Button } from "../ui/button";
 import { useCart } from "./CartContext";
 import { useDispatch, useSelector } from "react-redux";
 import { ArrowRight, ChevronLeft, ChevronRight, Home, LucideTruck, MapPin, Phone } from "lucide-react";
-import axios from "axios";
+import axios from "../../api/axios";
 import { Navigate, useNavigate } from "react-router-dom";
 import { setOrderRedux, setTriggerRefresh } from "@/redux/orderSlice";
 // import { toast } from "react-toastify";
@@ -34,7 +34,7 @@ const Cart = () => {
     const createOrder = async () => {
         try {
 
-            const res = await axios.post(`http://localhost:5000/api/order`, {
+            const res = await axios.post(`/api/order`, {
                 "shippingAddress": {
                     "street": user.addresses[0].street,
                     "city": user.addresses[0].city,
@@ -51,7 +51,7 @@ const Cart = () => {
 
             if (res.data.success) {
 
-                const deleteCart = await axios.delete(`http://localhost:5000/api/cart/`, {
+                const deleteCart = await axios.delete(`/api/cart/`, {
                     withCredentials: true
                 })
                 console.log("🟩", deleteCart)
@@ -68,7 +68,7 @@ const Cart = () => {
 
     const removeProduct = async (id) => {
         try {
-            const res = await axios.delete(`http://localhost:5000/api/cart/delete/${id}`, {
+            const res = await axios.delete(`/api/cart/delete/${id}`, {
                 withCredentials: true
             })
 
@@ -94,7 +94,7 @@ const Cart = () => {
 
         try {
             const res = await axios.patch(
-                `http://localhost:5000/api/cart/items/${productId}`,
+                `/api/cart/items/${productId}`,
                 {
                     qty: newQty
                 },

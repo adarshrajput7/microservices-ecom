@@ -1,5 +1,5 @@
 
-import axios from 'axios';
+import axios from '../../api/axios';
 import { useEffect, useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { Heart, CheckCircle2, CircleX, ChevronRight } from 'lucide-react';
@@ -34,7 +34,7 @@ const ProductsView = () => {
     useEffect(() => {
         const getProductById = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/api/product/${id}`, {
+                const res = await axios.get(`/api/product/${id}`, {
                     withCredentials: true
                 });
                 if (res.data.success) {
@@ -67,7 +67,7 @@ const ProductsView = () => {
         }
         try {
 
-            const res = await axios.post(`http://localhost:5000/api/cart/items`, {
+            const res = await axios.post(`/api/cart/items`, {
                 "productId": id,
                 "qty": 1,
                 "size": selectedSize

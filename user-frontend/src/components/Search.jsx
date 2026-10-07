@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import axios from "../api/axios";
 
 const Search = () => {
     const dispatch = useDispatch();
@@ -31,7 +32,7 @@ const Search = () => {
             params.set("page", "1");
             params.set("limit", "12");
 
-            const res = await fetch(`http://localhost:5000/api/product/?${params}`);
+            const res = await axios.get(`/api/product/?${params}`);
             const result = await res.json();
 
             if (result.success) {

@@ -4,7 +4,7 @@ import { IoBagAddOutline } from "react-icons/io5";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { createPortal } from "react-dom";
-import axios from "axios";
+import axios from "../../api/axios";
 // import { toast } from "react-toastify";
 import { setTriggerRefresh } from "@/redux/orderSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -105,7 +105,7 @@ const ProductCard = ({ item }) => {
     }
     try {
 
-      const res = await axios.post(`http://localhost:5000/api/cart/items`, {
+      const res = await axios.post(`/api/cart/items`, {
         "productId": id,
         "qty": 1,
         "size": selectedSize

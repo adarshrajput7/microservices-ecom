@@ -1,6 +1,7 @@
 import express from 'express'
 import cookieParser from 'cookie-parser'
 import sellerRouter from './routes/seller.routes.js'
+import cors from 'cors'
 
 
 

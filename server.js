@@ -79,6 +79,8 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
+  'https://microservices-ecom-six.vercel.app',
+  'https://microservices-ecom-h2ok8m9bc-adarsh-6a50.vercel.app',
   process.env.USER_FRONTEND_URL,
   process.env.SELLER_FRONTEND_URL
 ].filter(Boolean);

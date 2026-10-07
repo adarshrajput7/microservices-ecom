@@ -10,7 +10,8 @@ app.use(cookieParser())
 app.use(cors({
     origin: [
       'http://localhost:5173', 
-      'https://vercel.com/adarsh-6a50/microservices-ecom' 
+      'https://microservices-ecom-six.vercel.app',
+      'https://microservices-ecom-h2ok8m9bc-adarsh-6a50.vercel.app'
     ],
     credentials: true, // Important for cookies
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
